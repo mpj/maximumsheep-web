@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "twitch-token-bridge-staging",
+  "builds": [
+    { "src": "lambda.js", "use": "@now/node" }
+  ],
+  "env": {
+    "TWITCH_CLIENT_ID": "uekwnk316lym0mxfc1egfglkkeqqvj",
+    "TWITCH_CLIENT_SECRET": "@twitch-token-bridge-twitch-client-secret-staging",
+    "TWITCH_CLIENT_REDIRECT_URI": "https://twitch-token-bridge-staging-mpj.maximumsheep.now.sh/callback",
+    "MONGO_URI": "@twitch-token-bridge-mongo-uri-staging",
+    "MONGO_DB": "twitch-token-bridge-staging"
+    
+  },
+  "routes": [
+    { "src": "/.*", "dest": "lambda.js" }
+  ]
+}
+
+

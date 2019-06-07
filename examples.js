@@ -1,0 +1,1 @@
+//curl -X POST http://localhost:8010/video-coldline/us-central1/requestAccessToken -H "Content-Type:application/json"  ret"}

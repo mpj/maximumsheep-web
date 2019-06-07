@@ -1,4 +1,3 @@
-
 exports.persistRefreshToken = function(datastore, refreshToken) {  
   return datastore.save({
     key: tokenVaultKey(datastore),

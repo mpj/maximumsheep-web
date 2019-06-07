@@ -3,10 +3,9 @@ const twitch = require('./modules/twitch')
 const tokenStore = require('./modules/token-store')
 const fetch = require('node-fetch')
 
-
 // Configure twitch
 const TWITCH_CLIENT_ID =  'vxcijp9ycl41wbfnjoxfvnesubzz3h'
-const TWITCH_CLIENT_SECRET = 'jisu74vwgbfjl8qw7letgcw697zapw'
+const TWITCH_CLIENT_SECRET = 'wx0ikjck93uu261nvgy6ih9wzme4lb'
 const TWITCH_CLIENT_REDIRECT_URI = 
   //'https://us-central1-ft-overlay.cloudfunctions.net/callback'
   'http://localhost:8010/video-coldline/us-central1/callback'
@@ -28,14 +27,21 @@ const persistRefreshToken =
 const retriveRefreshToken = 
   tokenStore.retriveRefreshToken.bind(null, datastore)
   
-  
 exports.login = (req, res) => { 
   res.redirect(getLoginURL())
 }
 
 exports.callback = async (req, res) => {
   const code = req.query.code 
-  const tokens = await getTokensWithCode(code)
+  console.log('getting tokens')
+  let tokens 
+  try {
+    tokens = await getTokensWithCode(code)
+  } catch(e) {
+    res.status(403).send('Twitch considers this code invalid')
+    return
+  }
+
   await persistRefreshToken(tokens.refresh)
   res.send('Refresh token persisted, you can now go to /requestAccessToken')
 }
@@ -59,7 +65,6 @@ exports.requestAccessToken = async (req, res) => {
     res.send(401).send('Could not get new tokes with refresh token (probably expired). Go to /login')
     return
   }
-  
   await persistRefreshToken(tokens.refresh)
   res.send(tokens.access)
 }

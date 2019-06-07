@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "gcloud functions deploy login --runtime nodejs8 --trigger-http --memory 128 --timeout 5s --project ft-overlay"
+    "deploy-staging": "now --local-config now.staging.json"
   },
   "engines": {
     "node": "^8"

@@ -32,13 +32,13 @@ exports.getTokensWithRefreshToken = (fetch, clientId, clientSecret, refreshToken
   .then(tokenSetFromResponseBody)
 
 
-exports.getLoginURL = function(clientId, redirectURL) {
+exports.getLoginURL = function(clientId, redirectURL, scope) {
   return 'https://id.twitch.tv/oauth2/authorize' +
     '?' + 
     querystring.stringify({
       response_type: 'code',
       client_id: clientId,
-      scope: 'user_read channel_read channel:read:subscriptions channel_subscriptions',
+      scope,
       redirect_uri: redirectURL
     })
 }

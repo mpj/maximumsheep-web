@@ -27,8 +27,10 @@ const persistRefreshToken =
 const retriveRefreshToken = 
   tokenStore.retriveRefreshToken.bind(null, datastore)
   
-exports.login = (req, res) => { 
-  res.redirect(getLoginURL())
+exports.login = (req, res) => {
+  // TODO annoyingly broad
+  const scope = 'user_read channel_read channel:read:subscriptions channel_subscriptions'
+  res.redirect(getLoginURL(scope))
 }
 
 exports.callback = async (req, res) => {

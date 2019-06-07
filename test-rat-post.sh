@@ -1,0 +1,1 @@
+curl -X POST http://localhost:3000/request-token -H "Content-Type:application/json"  -d '{"secret":"secretsecretsecret"}'

@@ -12,20 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/datastore": "^4.0.0",
-    "express": "^4.17.1",
-    "firebase-admin": "^8.0.0",
     "micro": "^9.3.4",
     "mongodb": "^3.2.7",
     "node-fetch": "^2.6.0",
-    "pusher": "^2.2.0",
-    "query-string": "^6.6.0",
-    "querystring": "^0.2.0",
-    "request": "^2.88.0",
-    "simple-encryptor": "^3.0.0",
-    "tmi.js": "^1.4.2",
-    "twitch": "^2.2.5",
-    "twitch-pubsub-client": "^2.2.5"
+    "query-string": "^6.6.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

@@ -45,7 +45,7 @@ async function requestToken(req, res) {
     res.end('failed parsing json from request, you must post JSON')
     return
   }
-  if(!body || body.secret !== 'secretsecretsecret') {
+  if(!body || body.secret !== process.env.MAIN_CLIENT_SECRET) {
     res.writeHead(401)
     res.end('This endpoint requires a JSON object with a correct "secret" property')
     return

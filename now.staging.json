@@ -11,8 +11,8 @@
     "TWITCH_CLIENT_SECRET": "@twitch-token-bridge-twitch-client-secret-staging",
     "TWITCH_CLIENT_REDIRECT_URI": "https://twitch-token-bridge-staging.now.sh/callback",
     "MONGO_URI": "@twitch-token-bridge-mongo-uri-staging",
-    "MONGO_DB": "twitch-token-bridge-staging"
-    
+    "MONGO_DB": "twitch-token-bridge-staging",
+    "MAIN_CLIENT_SECRET": "@twitch-token-bridge-main-client-secret-staging"
   },
   "routes": [
     { "src": "/.*", "dest": "lambda.js" }

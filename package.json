@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy-staging": "now --local-config now.staging.json",
-    "lint": "eslint --max-warnings 0 src "
+    "lint": "eslint --max-warnings 0 src",
+    "lint:fix": "eslint --fix src",
+    "ci:check": "npm run-script lint"
   },
   "engines": {
     "node": "^8"

@@ -16,7 +16,7 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package-lock.json" }}
-      - run: npm run ci:check
+      - run: npm run ci
   
   deploy-staging:
     <<: *defaults

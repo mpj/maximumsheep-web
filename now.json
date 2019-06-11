@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "src/lambda.js", "use": "@now/node" }
+  ],
+  "routes": [
+    { "src": "/.*", "dest": "src/lambda.js" }
+  ]
+}

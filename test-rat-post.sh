@@ -1,1 +1,1 @@
-curl -X POST http://localhost:3000/request-token -H "Content-Type:application/json"  -d '{"secret":"secretsecretsecret"}'
+curl -X POST http://localhost:3000/request-token -H "Content-Type:application/json"  -d '{"secret":"VLJHnjBBDdvJccjJWo2iVNEVLA97CX"}'

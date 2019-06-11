@@ -15,8 +15,7 @@
     "node": "^8"
   },
   "prettier": {
-    "semi": false,
-    "singleQuote": true
+    "semi": false
   },
   "author": "",
   "license": "ISC",

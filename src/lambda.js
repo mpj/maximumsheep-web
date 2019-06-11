@@ -1,19 +1,19 @@
-const { json } = require('micro')
-const twitch = require('./modules/twitch')
-const fetch = require('node-fetch')
-const queryString = require('query-string')
+const { json } = require("micro")
+const twitch = require("./modules/twitch")
+const fetch = require("node-fetch")
+const queryString = require("query-string")
 
 module.exports = (req, res) => {
-  if (req.url === '/login') login(req, res)
-  else if (req.url.includes('/callback')) callback(req, res)
-  else if (req.url === '/request-token') requestToken(req, res)
-  else res.end('not a valid url')
+  if (req.url === "/login") login(req, res)
+  else if (req.url.includes("/callback")) callback(req, res)
+  else if (req.url === "/request-token") requestToken(req, res)
+  else res.end("not a valid url")
 }
 
 function login(req, res) {
   // TODO annoyingly broad
   const scope =
-    'user_read channel_read channel:read:subscriptions channel_subscriptions'
+    "user_read channel_read channel:read:subscriptions channel_subscriptions"
   res.writeHead(302, {
     Location: getLoginURL(scope)
   })
@@ -21,20 +21,20 @@ function login(req, res) {
 }
 
 async function callback(req, res) {
-  console.log('callback entered')
+  console.log("callback entered")
   const code = queryString.parseUrl(req.url).query.code
-  console.log('getting tokens')
+  console.log("getting tokens")
   let tokens
   try {
     tokens = await getTokensWithCode(code)
   } catch (e) {
     res.writeHead(403)
-    res.end('Twitch considers this code invalid')
+    res.end("Twitch considers this code invalid")
     return
   }
 
   await saveRefreshToken(tokens.refresh)
-  res.end('Refresh token persisted, you can now go to /request-token')
+  res.end("Refresh token persisted, you can now go to /request-token")
 }
 
 async function requestToken(req, res) {
@@ -43,7 +43,7 @@ async function requestToken(req, res) {
     body = await json(req)
   } catch (e) {
     res.writeHead(400)
-    res.end('failed parsing json from request, you must post JSON')
+    res.end("failed parsing json from request, you must post JSON")
     return
   }
   if (!body || body.secret !== process.env.MAIN_CLIENT_SECRET) {
@@ -57,7 +57,7 @@ async function requestToken(req, res) {
   const refreshToken = await loadRefreshToken()
   if (!refreshToken) {
     res.writeHead(401)
-    res.end('No refresh token stored. Go to /login')
+    res.end("No refresh token stored. Go to /login")
     return
   }
   let tokens
@@ -66,7 +66,7 @@ async function requestToken(req, res) {
   } catch (error) {
     res.writeHead(401)
     res.end(
-      'Could not get new tokes with refresh token (probably expired). Go to /login'
+      "Could not get new tokes with refresh token (probably expired). Go to /login"
     )
     return
   }
@@ -93,9 +93,9 @@ const getTokensWithRefreshToken = twitch.getTokensWithRefreshToken.bind(
   process.env.TWITCH_CLIENT_SECRET
 )
 
-const tokenStore = require('./modules/token-store-mongo')
+const tokenStore = require("./modules/token-store-mongo")
 
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require("mongodb").MongoClient
 
 const saveRefreshToken = tokenStore.saveRefreshToken.bind(
   null,

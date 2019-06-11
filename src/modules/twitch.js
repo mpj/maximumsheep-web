@@ -1,4 +1,4 @@
-const querystring = require('query-string')
+const querystring = require("query-string")
 
 exports.getTokensWithCode = (
   fetch,
@@ -8,15 +8,15 @@ exports.getTokensWithCode = (
   code
 ) =>
   fetch(
-    'https://id.twitch.tv/oauth2/token?' +
+    "https://id.twitch.tv/oauth2/token?" +
       querystring.stringify({
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         client_id: clientId,
         client_secret: clientSecret,
         redirect_uri: redirectURL,
         code
       }),
-    { method: 'POST' }
+    { method: "POST" }
   )
     .then(assertResponseOK)
     .then(parseResponseJSON)
@@ -29,14 +29,14 @@ exports.getTokensWithRefreshToken = (
   refreshToken
 ) =>
   fetch(
-    'https://id.twitch.tv/oauth2/token?' +
+    "https://id.twitch.tv/oauth2/token?" +
       querystring.stringify({
-        grant_type: 'refresh_token',
+        grant_type: "refresh_token",
         client_id: clientId,
         client_secret: clientSecret,
         refresh_token: refreshToken
       }),
-    { method: 'POST' }
+    { method: "POST" }
   )
     .then(assertResponseOK)
     .then(parseResponseJSON)
@@ -44,10 +44,10 @@ exports.getTokensWithRefreshToken = (
 
 exports.getLoginURL = function(clientId, redirectURL, scope) {
   return (
-    'https://id.twitch.tv/oauth2/authorize' +
-    '?' +
+    "https://id.twitch.tv/oauth2/authorize" +
+    "?" +
     querystring.stringify({
-      response_type: 'code',
+      response_type: "code",
       client_id: clientId,
       scope,
       redirect_uri: redirectURL
@@ -61,7 +61,7 @@ function tokenSetFromResponseBody(body) {
     !body.refresh_token ||
     !Number.isInteger(body.expires_in)
   ) {
-    throw new Error('Response body cannot be parsed as token set')
+    throw new Error("Response body cannot be parsed as token set")
   }
   return {
     expiresIn: body.expires_in,
@@ -73,7 +73,7 @@ function tokenSetFromResponseBody(body) {
 const assertResponseOK = response => {
   if (response.status !== 200) {
     throw new Error(
-      'Expected response status to have been 200 but was ' + response.status
+      "Expected response status to have been 200 but was " + response.status
     )
   }
   return response

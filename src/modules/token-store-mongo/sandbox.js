@@ -1,9 +1,9 @@
-const tokenStore = require('./')
-const MongoClient = require('mongodb').MongoClient
+const tokenStore = require("./")
+const MongoClient = require("mongodb").MongoClient
 
-const db = 'twitch-token-bridge-dev-mpj'
+const db = "twitch-token-bridge-dev-mpj"
 const uri =
-  'mongodb+srv://dev-mpj:B2Zer7MIXeIlUfzS@cluster0-lbv4m.gcp.mongodb.net/twitch-token-bridge-dev-mpj?retryWrites=true&w=majority'
+  "mongodb+srv://dev-mpj:B2Zer7MIXeIlUfzS@cluster0-lbv4m.gcp.mongodb.net/twitch-token-bridge-dev-mpj?retryWrites=true&w=majority"
 
 const saveRefreshToken = tokenStore.saveRefreshToken.bind(
   null,
@@ -18,6 +18,6 @@ const loadRefreshToken = tokenStore.loadRefreshToken.bind(
   db
 )
 
-saveRefreshToken('apas').then(() =>
-  loadRefreshToken().then(tkn => console.log('loaded token', tkn))
+saveRefreshToken("apas").then(() =>
+  loadRefreshToken().then(tkn => console.log("loaded token", tkn))
 )

@@ -20,8 +20,8 @@ exports.loadRefreshToken = async (MongoClient, uri, dbName, token) => {
   return doc.value
 }
 
-const COLLECTION_NAME = 'state'
-const LABEL_NAME = 'refreshToken'
+const COLLECTION_NAME = "state"
+const LABEL_NAME = "refreshToken"
 
 async function connected(MongoClient, uri, callback) {
   const client = new MongoClient(uri, { useNewUrlParser: true })

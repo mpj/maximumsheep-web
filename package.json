@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy-staging": "now --local-config now.staging.json",
+    "test": "jest",
     "lint": "eslint --max-warnings 0 src",
     "lint:fix": "eslint --fix src",
-    "ci:check": "npm run-script lint",
+    "ci": "npm run-script lint && npm run-script test",
     "style": "prettier --check \"src/**/*.js\"",
     "style:fix": "prettier --write \"src/**/*.js\""
   },
@@ -35,6 +34,7 @@
     "eslint-plugin-only-warn": "^1.0.1",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
+    "jest": "^24.8.0",
     "prettier": "^1.18.2"
   }
 }

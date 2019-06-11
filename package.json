@@ -7,10 +7,16 @@
     "deploy-staging": "now --local-config now.staging.json",
     "lint": "eslint --max-warnings 0 src",
     "lint:fix": "eslint --fix src",
-    "ci:check": "npm run-script lint"
+    "ci:check": "npm run-script lint",
+    "style": "prettier --check \"src/**/*.js\"",
+    "style:fix": "prettier --write \"src/**/*.js\""
   },
   "engines": {
     "node": "^8"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
   },
   "author": "",
   "license": "ISC",
@@ -27,6 +33,7 @@
     "eslint-plugin-jest": "^22.6.4",
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.1.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "prettier": "^1.18.2"
   }
 }

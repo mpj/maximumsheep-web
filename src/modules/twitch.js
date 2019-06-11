@@ -1,6 +1,12 @@
 const querystring = require('query-string')
 
-exports.getTokensWithCode = (fetch, clientId, clientSecret, redirectURL,  code) =>
+exports.getTokensWithCode = (
+  fetch,
+  clientId,
+  clientSecret,
+  redirectURL,
+  code
+) =>
   fetch(
     'https://id.twitch.tv/oauth2/token?' +
       querystring.stringify({
@@ -9,14 +15,19 @@ exports.getTokensWithCode = (fetch, clientId, clientSecret, redirectURL,  code) 
         client_secret: clientSecret,
         redirect_uri: redirectURL,
         code
-      })
-    , { method: 'POST' }
+      }),
+    { method: 'POST' }
   )
-  .then(assertResponseOK)
-  .then(parseResponseJSON)
-  .then(tokenSetFromResponseBody)
+    .then(assertResponseOK)
+    .then(parseResponseJSON)
+    .then(tokenSetFromResponseBody)
 
-exports.getTokensWithRefreshToken = (fetch, clientId, clientSecret, refreshToken) =>
+exports.getTokensWithRefreshToken = (
+  fetch,
+  clientId,
+  clientSecret,
+  refreshToken
+) =>
   fetch(
     'https://id.twitch.tv/oauth2/token?' +
       querystring.stringify({
@@ -24,28 +35,30 @@ exports.getTokensWithRefreshToken = (fetch, clientId, clientSecret, refreshToken
         client_id: clientId,
         client_secret: clientSecret,
         refresh_token: refreshToken
-      })
-    , { method: 'POST' }
+      }),
+    { method: 'POST' }
   )
-  .then(assertResponseOK)
-  .then(parseResponseJSON)
-  .then(tokenSetFromResponseBody)
+    .then(assertResponseOK)
+    .then(parseResponseJSON)
+    .then(tokenSetFromResponseBody)
 
 exports.getLoginURL = function(clientId, redirectURL, scope) {
-  return 'https://id.twitch.tv/oauth2/authorize' +
-    '?' + 
+  return (
+    'https://id.twitch.tv/oauth2/authorize' +
+    '?' +
     querystring.stringify({
       response_type: 'code',
       client_id: clientId,
       scope,
       redirect_uri: redirectURL
     })
+  )
 }
 
-function tokenSetFromResponseBody (body) {
+function tokenSetFromResponseBody(body) {
   if (
-    !body.access_token || 
-    !body.refresh_token || 
+    !body.access_token ||
+    !body.refresh_token ||
     !Number.isInteger(body.expires_in)
   ) {
     throw new Error('Response body cannot be parsed as token set')
@@ -59,10 +72,11 @@ function tokenSetFromResponseBody (body) {
 
 const assertResponseOK = response => {
   if (response.status !== 200) {
-    throw new Error('Expected response status to have been 200 but was ' + response.status)
+    throw new Error(
+      'Expected response status to have been 200 but was ' + response.status
+    )
   }
   return response
 }
 
 const parseResponseJSON = response => response.json()
-

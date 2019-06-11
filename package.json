@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy-staging": "now --local-config now.staging.json",
-    "lint": "eslint"
+    "lint": "eslint --max-warnings 0 src "
   },
   "engines": {
     "node": "^8"

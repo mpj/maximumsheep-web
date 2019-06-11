@@ -6,7 +6,7 @@
     "test": "jest",
     "lint": "eslint --max-warnings 0 src",
     "lint:fix": "eslint --fix src",
-    "ci": "npm run-script lint && npm run-script test",
+    "ci": "npm run lint && npm run test && npm audit",
     "style": "prettier --check \"src/**/*.js\"",
     "style:fix": "prettier --write \"src/**/*.js\""
   },

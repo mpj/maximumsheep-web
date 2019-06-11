@@ -2,13 +2,14 @@ const { json } = require("micro")
 const twitch = require("./modules/twitch")
 const fetch = require("node-fetch")
 const queryString = require("query-string")
+const cors = require("micro-cors")()
 
-module.exports = (req, res) => {
+module.exports = cors((req, res) => {
   if (req.url === "/login") login(req, res)
   else if (req.url.includes("/callback")) callback(req, res)
   else if (req.url === "/request-token") requestToken(req, res)
   else res.end("not a valid url")
-}
+})
 
 function login(req, res) {
   // TODO annoyingly broad

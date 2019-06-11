@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "twitch-token-bridge",
   "builds": [
     { "src": "src/lambda.js", "use": "@now/node" }
   ],

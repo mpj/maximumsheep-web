@@ -23,10 +23,6 @@ jobs:
     steps:
       - checkout
       - run: sudo npm install --global --unsafe-perm now
-      - save_cache:
-          paths:
-            - node_modules
-          key: zeit-env-{{ npm -g view now version }}
       - run: $(npm bin -g)/now --token $ZEIT_TOKEN --local-config now.staging.json --target production
   deploy-production:
     <<: *defaults

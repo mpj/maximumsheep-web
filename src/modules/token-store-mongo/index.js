@@ -10,7 +10,7 @@ exports.saveRefreshToken = (MongoClient, uri, dbName, token) =>
       )
   )
 
-exports.loadRefreshToken = async (MongoClient, uri, dbName, token) => {
+exports.loadRefreshToken = async (MongoClient, uri, dbName) => {
   let doc = await connected(MongoClient, uri, client =>
     client
       .db(dbName)

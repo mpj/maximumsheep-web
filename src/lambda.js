@@ -21,9 +21,7 @@ function login(req, res) {
 }
 
 async function callback(req, res) {
-  console.log("callback entered")
   const code = queryString.parseUrl(req.url).query.code
-  console.log("getting tokens")
   let tokens
   try {
     tokens = await getTokensWithCode(code)

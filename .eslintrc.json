@@ -1,43 +1,20 @@
 {
-  "extends": "standard",
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
   "plugins": [
-    "jest"
+    "jest",
+    "only-warn"
   ],
   "rules": {
-    "no-multi-spaces": 0,
-    "comma-spacing": 0,
-    "keyword-spacing": 0,
-    "no-trailing-spaces": 0,
-    "eol-last": 0,
-    "padded-blocks": 0,
-    "spaced-comment": 0,
-    "no-multiple-empty-lines": 0,
-    "space-before-function-paren": 0,
-    "comma-dangle": 0,
-    "jest/no-disabled-tests": "warn",
-    "jest/no-focused-tests": "error",
-    "jest/no-identical-title": "error",
-    "jest/prefer-to-have-length": "warn",
-    "jest/valid-expect": "error",
-    "indent": 0,
-    "no-unused-expressions": "warn",
-    "no-unused-vars": "warn",
-    "space-infix-ops": 0,
-    "one-var": 0,
-    "space-in-parens": "warn",
-    "standard/array-bracket-even-spacing": "warn",
-    "no-irregular-whitespace": "warn",
-    "brace-style": "off",
-    "space-before-blocks": "off",
-    "require-await": "error",
-    "standard/object-curly-even-spacing": "warn",
-    "object-curly-spacing": "warn",
-    "no-undef": "error",
-    "quotes": "warn",
-    "no-unexpected-multiline": "error",
-    "semi": [ "warn", "never" ]
+    
   },
   "env": {
-    "jest/globals": true
+    "jest/globals": true,
+    "node": true
   }
 }

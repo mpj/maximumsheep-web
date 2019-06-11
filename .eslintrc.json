@@ -34,7 +34,8 @@
     "object-curly-spacing": "warn",
     "no-undef": "error",
     "quotes": "warn",
-    "no-unexpected-multiline": "warn"
+    "no-unexpected-multiline": "error",
+    "semi": [ "warn", "never" ]
   },
   "env": {
     "jest/globals": true

@@ -1,7 +1,5 @@
 const tokenStore = require("./")
 
-/* eslint-disable no-unused-vars */
-
 describe('token-store-mongo', () => {
   let saveRefreshToken
   let loadRefreshToken
@@ -15,6 +13,8 @@ describe('token-store-mongo', () => {
   let updateOneCalledWithFilter
   let updateOneCalledWithUpdate
   let updateOneCalledWithOptions
+  let findOneCalledWithFilter
+  let findOneWillReturnDocument
   class MongoClient {
     constructor(uri, opts) {
       clientCreatedWithUri = uri
@@ -27,12 +27,17 @@ describe('token-store-mongo', () => {
       dbCalledWithName = name
       return {
         collection: name => {
+          expect(connectWasCalled).toBe(true)
           collectionCalledWithName = name
           return {
             updateOne: async (filter, update, options) => {
               updateOneCalledWithFilter = filter
               updateOneCalledWithUpdate = update
               updateOneCalledWithOptions = options
+            },
+            findOne: async (filter) => {
+              findOneCalledWithFilter = filter
+              return findOneWillReturnDocument
             }
           }
         }
@@ -53,6 +58,7 @@ describe('token-store-mongo', () => {
     updateOneCalledWithFilter  = null
     updateOneCalledWithUpdate = null
     updateOneCalledWithOptions = null
+    findOneWillReturnDocument = null
     saveRefreshToken = tokenStore.saveRefreshToken.bind(
       null,
       MongoClient
@@ -64,9 +70,7 @@ describe('token-store-mongo', () => {
   })
 
   describe('saveRefreshToken', () => {
-    const someUri = 'mongodb://lololo'
-    const someDbName = 'someDb'
-    const someToken = 'someTokenSecret123'
+
     beforeEach(() => 
       saveRefreshToken(someUri, someDbName, someToken))
     
@@ -90,6 +94,42 @@ describe('token-store-mongo', () => {
     
     it('does the update as an upsert', () => 
       expect(updateOneCalledWithOptions.upsert).toBe(true))
-
+    
+    it('closes the connection', () => 
+      expect(closeWasCalled).toBe(true))
   })
+
+  describe('loadRefreshToken', () => {
+    let result
+    beforeEach(async () => {
+      findOneWillReturnDocument = { value: someToken }
+      result = await loadRefreshToken(someUri, someDbName)
+    })
+      
+    it('passes url to client', () => 
+      expect(clientCreatedWithUri).toBe(someUri))
+
+    it('uses new url parser on client', () =>
+      expect(clientCreatedWithOpts.useNewUrlParser).toBe(true))
+    
+    it('passes database name to client', () => 
+      expect(dbCalledWithName).toBe(someDbName))
+    
+    it('uses collect collection name', () => 
+      expect(collectionCalledWithName).toBe('state'))
+
+    it('asks for the correct document', () =>
+      expect(findOneCalledWithFilter.label).toBe('refreshToken'))
+    
+    it('returns the value of the document', () => 
+      expect(result).toBe(someToken))
+    
+    it('closes the connection', () => 
+      expect(closeWasCalled).toBe(true))
+  })
+
 })
+
+const someUri = 'mongodb://lololo'
+const someDbName = 'someDb'
+const someToken = 'someTokenSecret123'

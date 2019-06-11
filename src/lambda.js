@@ -5,6 +5,11 @@ const queryString = require("query-string")
 const cors = require("micro-cors")()
 
 module.exports = cors((req, res) => {
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200)
+    res.end('OK')
+    return
+  }
   if (req.url === "/login") login(req, res)
   else if (req.url.includes("/callback")) callback(req, res)
   else if (req.url === "/request-token") requestToken(req, res)

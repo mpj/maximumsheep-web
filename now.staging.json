@@ -4,7 +4,7 @@
   "scope": "maximumsheep",
   "alias": "twitch-token-bridge-staging.now.sh",
   "builds": [
-    { "src": "lambda.js", "use": "@now/node" }
+    { "src": "src/lambda.js", "use": "@now/node" }
   ],
   "env": {
     "TWITCH_CLIENT_ID": "uekwnk316lym0mxfc1egfglkkeqqvj",
@@ -15,6 +15,6 @@
     "MAIN_CLIENT_SECRET": "@twitch-token-bridge-main-client-secret-staging"
   },
   "routes": [
-    { "src": "/.*", "dest": "lambda.js" }
+    { "src": "/.*", "dest": "src/lambda.js" }
   ]
 }

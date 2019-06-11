@@ -1,4 +1,4 @@
-const querystring = require('querystring')
+const querystring = require('query-string')
 
 exports.getTokensWithCode = (fetch, clientId, clientSecret, redirectURL,  code) =>
   fetch(
@@ -30,7 +30,6 @@ exports.getTokensWithRefreshToken = (fetch, clientId, clientSecret, refreshToken
   .then(assertResponseOK)
   .then(parseResponseJSON)
   .then(tokenSetFromResponseBody)
-
 
 exports.getLoginURL = function(clientId, redirectURL, scope) {
   return 'https://id.twitch.tv/oauth2/authorize' +

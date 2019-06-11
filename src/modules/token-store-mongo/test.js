@@ -70,8 +70,26 @@ describe('token-store-mongo', () => {
     beforeEach(() => 
       saveRefreshToken(someUri, someDbName, someToken))
     
-    it('waffle', () => {
-      expect(clientCreatedWithUri).toBe(someUri)
-    })
+    it('passes url to client', () => 
+      expect(clientCreatedWithUri).toBe(someUri))
+
+    it('uses new url parser on client', () =>
+      expect(clientCreatedWithOpts.useNewUrlParser).toBe(true))
+    
+    it('passes database name to client', () => 
+      expect(dbCalledWithName).toBe(someDbName))
+    
+    it('uses collect collection name', () => 
+      expect(collectionCalledWithName).toBe('state'))
+    
+    it('updates state with correct label', () => 
+      expect(updateOneCalledWithFilter.label).toBe('refreshToken'))
+    
+    it('sets the state document value with token', () => 
+      expect(updateOneCalledWithUpdate.$set.value).toBe(someToken))
+    
+    it('does the update as an upsert', () => 
+      expect(updateOneCalledWithOptions.upsert).toBe(true))
+
   })
 })

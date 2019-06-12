@@ -1,1 +1,1 @@
-curl -X POST http://localhost:3000/request-token -H "Content-Type:application/json"  -d '{"secret":"VLJHnjBBDdvJccjJWo2iVNEVLA97CX"}'
+curl -X POST http://localhost:3000/channel-id -H "Content-Type:application/json"  -d '{"secret":"VLJHnjBBDdvJccjJWo2iVNEVLA97CX"}'

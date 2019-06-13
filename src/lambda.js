@@ -114,9 +114,6 @@ async function ensureCorrectSecret(req, res) {
   return true
 }
 
-async function ensureAccessToken(req, res) {
-
-}
 
 const getLoginURL = twitch.getLoginURL.bind(
   null,

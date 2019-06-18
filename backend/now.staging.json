@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "name": "twitch-token-bridge-staging",
+  "name": "maximumsheep-web-backend-staging",
   "scope": "maximumsheep",
-  "alias": "twitch-token-bridge-staging.now.sh",
+  "alias": "maximumsheep-web-backend-staging.now.sh",
   "builds": [
     { "src": "src/lambda.js", "use": "@now/node" }
   ],

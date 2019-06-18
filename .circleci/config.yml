@@ -3,7 +3,7 @@ defaults: &defaults
   docker:
     - image: circleci/node:8
 jobs:
-  check:
+  backend-check:
     <<: *defaults
     working_directory: ~/tmp
     steps:
@@ -11,39 +11,41 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}
-      - run: npm install
+      - run: cd backend && npm install
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package-lock.json" }}
-      - run: npm run ci
+      - run: cd backend && npm run ci
   
-  deploy-staging:
+  backend-deploy-staging:
     <<: *defaults
     steps:
       - checkout
       - run: sudo npm install --global --unsafe-perm now
-      - run: $(npm bin -g)/now --token $ZEIT_TOKEN --local-config now.staging.json --target production
-  deploy-production:
+      - run: cd backend && $(npm bin -g)/now --token $ZEIT_TOKEN --local-config now.staging.json --target production
+
+  backend-deploy-production:
     <<: *defaults
     steps:
       - checkout
       - run: sudo npm install --global --unsafe-perm now
-      - run: $(npm bin -g)/now --token $ZEIT_TOKEN --local-config now.production.json --target production
+      - run: cd backend && $(npm bin -g)/now --token $ZEIT_TOKEN --local-config now.production.json --target production
+      
 workflows:
   version: 2
-  build-n-deploy:
+  backend-deploy:
     jobs:
-      - check
-      - deploy-staging:
+      - backend-check
+      - backend-deploy-staging:
           requires:
-            - check
+            - backend-check
           filters:
             branches:
               only: master
-      - deploy-production:
+      - backend-deploy-production:
           requires:
-            - check
+            - backend-check
           filters:
             branches:
               only: production

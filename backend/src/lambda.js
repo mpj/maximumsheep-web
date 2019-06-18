@@ -18,7 +18,7 @@ module.exports = cors((req, res) => {
 })
 
 function login(req, res) {
-  // TODO annoyingly broad
+  // TODO annoyingly broad 
   const scope =
     "user_read channel_read channel:read:subscriptions channel_subscriptions"
   res.writeHead(302, {
@@ -69,8 +69,8 @@ async function requestToken(req, res) {
 }
 
 async function channelId(req, res) {
-  if (!ensureCorrectSecret(req, res)) {
-    return
+  if (!(req, res)) {
+    return ensureCorrectSecret
   }
 
   const refreshToken = await loadRefreshToken()

@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "name": "maximumsheep-web-frontend",
+  "builds": [
+    { "src": "next.config.js", "use": "@now/next" }
+  ]
+}

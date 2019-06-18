@@ -1,0 +1,20 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "jest",
+    "only-warn"
+  ],
+  "rules": {
+    "no-labels": [ "error", { "allowSwitch": true } ]
+  },
+  "env": {
+    "jest/globals": true,
+    "node": true
+  }
+}

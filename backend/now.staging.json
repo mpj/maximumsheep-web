@@ -11,7 +11,7 @@
     "TWITCH_CLIENT_SECRET": "@maximumsheep-web-staging-twitch-client-secret",
     "TWITCH_CLIENT_REDIRECT_URI": "https://maximumsheep-web-backend-staging.now.sh/callback",
     "MONGO_URI": "@maximumsheep-web-staging-mongo-uri",
-    "MONGO_DB": "twitch-token-bridge-staging",
+    "MONGO_DB": "maximumsheep-web-backend-staging",
     "MAIN_CLIENT_SECRET": "@maximumsheep-web-staging-main-client-secret"
   },
   "routes": [

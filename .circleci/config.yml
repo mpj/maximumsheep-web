@@ -10,12 +10,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-{{ checksum "backend/package-lock.json" }}
       - run: cd backend && npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          key: v1-dependencies-{{ checksum "backend/package-lock.json" }}
       - run: cd backend && npm run ci
   
   backend-deploy-staging:

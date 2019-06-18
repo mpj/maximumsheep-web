@@ -8,11 +8,11 @@
   ],
   "env": {
     "TWITCH_CLIENT_ID": "uekwnk316lym0mxfc1egfglkkeqqvj",
-    "TWITCH_CLIENT_SECRET": "@maximumsheep-web-backend-staging-twitch-client-secret",
+    "TWITCH_CLIENT_SECRET": "@maximumsheep-web-staging-twitch-client-secret",
     "TWITCH_CLIENT_REDIRECT_URI": "https://maximumsheep-web-backend-staging.now.sh/callback",
-    "MONGO_URI": "@maximumsheep-web-backend-staging-mongo-uri",
+    "MONGO_URI": "@maximumsheep-web-staging-mongo-uri",
     "MONGO_DB": "twitch-token-bridge-staging",
-    "MAIN_CLIENT_SECRET": "@maximumsheep-web-backend-staging-main-client-secret"
+    "MAIN_CLIENT_SECRET": "@maximumsheep-web-staging-main-client-secret"
   },
   "routes": [
     { "src": "/.*", "dest": "src/lambda.js" }

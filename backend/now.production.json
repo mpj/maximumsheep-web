@@ -1,18 +1,18 @@
 {
   "version": 2,
-  "name": "maximumsheep-web-backend",
+  "name": "maximumsheep-web-backend-production",
   "scope": "maximumsheep",
-  "alias": "maximumsheep-web-backend.now.sh",
+  "alias": "maximumsheep-web-backend-production.now.sh",
   "builds": [
     { "src": "src/lambda.js", "use": "@now/node" }
   ],
   "env": {
     "TWITCH_CLIENT_ID": "ggjwdwfc9q3itbql59yixzr2xy3yty",
-    "TWITCH_CLIENT_SECRET": "@twitch-token-bridge-twitch-client-secret-production",
-    "TWITCH_CLIENT_REDIRECT_URI": "https://maximumsheep-web-backend.now.sh/callback",
-    "MONGO_URI": "@twitch-token-bridge-mongo-uri-production",
+    "TWITCH_CLIENT_SECRET": "@maximumsheep-web-backend-production-twitch-client-secret",
+    "TWITCH_CLIENT_REDIRECT_URI": "https://maximumsheep-web-backend-production.now.sh/callback",
+    "MONGO_URI": "@maximumsheep-web-backend-production-mongo-uri",
     "MONGO_DB": "twitch-token-bridge-production",
-    "MAIN_CLIENT_SECRET": "@twitch-token-bridge-main-client-secret-production"
+    "MAIN_CLIENT_SECRET": "@maximumsheep-web-backend-production-main-client-secret"
   },
   "routes": [
     { "src": "/.*", "dest": "src/lambda.js" }

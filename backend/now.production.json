@@ -10,7 +10,7 @@
     "TWITCH_CLIENT_ID": "ggjwdwfc9q3itbql59yixzr2xy3yty",
     "TWITCH_CLIENT_SECRET": "@maximumsheep-web-production-twitch-client-secret",
     "TWITCH_CLIENT_REDIRECT_URI": "https://maximumsheep-web-backend-production.now.sh/callback",
-    "MONGO_URI": "@maximumsheep-web-mongo-uri",
+    "MONGO_URI": "@maximumsheep-web-production-mongo-uri",
     "MONGO_DB": "maximumsheep-web-backend-production",
     "MAIN_CLIENT_SECRET": "@maximumsheep-web-production-main-client-secret"
   },

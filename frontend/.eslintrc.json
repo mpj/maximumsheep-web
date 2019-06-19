@@ -1,20 +1,33 @@
 {
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2017,
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   },
   "extends": [
     "eslint:recommended",
+    "plugin:react/recommended",
     "prettier"
   ],
   "plugins": [
     "jest",
-    "only-warn"
+    "only-warn",
+    "react"
   ],
   "rules": {
-    "no-labels": [ "error", { "allowSwitch": true } ]
+    "no-labels": [ "error", { "allowSwitch": true } ],
+    "react/react-in-jsx-scope": "off"
   },
   "env": {
     "jest/globals": true,
-    "node": true
+    "node": true,
+    "es6": true
   }
 }

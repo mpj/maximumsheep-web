@@ -5,9 +5,9 @@ const queryString = require("query-string")
 const cors = require("micro-cors")()
 
 module.exports = cors((req, res) => {
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     res.writeHead(200)
-    res.end('OK')
+    res.end("OK")
     return
   }
   if (req.url === "/login") login(req, res)
@@ -18,7 +18,7 @@ module.exports = cors((req, res) => {
 })
 
 function login(req, res) {
-  // TODO annoyingly broad 
+  // TODO annoyingly broad
   const scope =
     "user_read channel_read channel:read:subscriptions channel_subscriptions"
   res.writeHead(302, {
@@ -43,7 +43,6 @@ async function callback(req, res) {
 }
 
 async function requestToken(req, res) {
-  
   if (!ensureCorrectSecret(req, res)) {
     return
   }
@@ -90,9 +89,8 @@ async function channelId(req, res) {
     return
   }
   await saveRefreshToken(tokens.refresh)
-  
-  res.end(await getChannelId(tokens.access))
 
+  res.end(await getChannelId(tokens.access))
 }
 
 async function ensureCorrectSecret(req, res) {
@@ -113,7 +111,6 @@ async function ensureCorrectSecret(req, res) {
   }
   return true
 }
-
 
 const getLoginURL = twitch.getLoginURL.bind(
   null,

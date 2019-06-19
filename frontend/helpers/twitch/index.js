@@ -9,11 +9,11 @@ module.exports.getChannelId = async function getChannelId(
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ secret })
-  });
+  })
   if (response.status !== 200) {
     throw new Error(
       "Response status was not okay (secret was probably incorrect)"
-    );
+    )
   }
-  return response.text();
-};
+  return response.text()
+}

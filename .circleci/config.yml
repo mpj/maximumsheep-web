@@ -33,12 +33,26 @@ jobs:
           key: v1-frontend-dependencies-{{ checksum "frontend/package-lock.json" }}
       - run: cd frontend && npm run ci  
   
+  frontend-deploy-other-branch:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: sudo npm install --global --unsafe-perm now
+      - run: cd frontend && $(npm bin -g)/now --token $ZEIT_TOKEN --local-config now.json --name maximumsheep-web-$(echo $CIRCLE_SHA1 | cut -c1-7)
+
   backend-deploy-staging:
     <<: *defaults
     steps:
       - checkout
       - run: sudo npm install --global --unsafe-perm now
       - run: cd backend && $(npm bin -g)/now --token $ZEIT_TOKEN --local-config now.staging.json --target production
+  
+  frontend-deploy-staging:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: sudo npm install --global --unsafe-perm now
+      - run: cd frontend && $(npm bin -g)/now --token $ZEIT_TOKEN --local-config now.staging.json --target production
 
   backend-deploy-production:
     <<: *defaults
@@ -49,19 +63,40 @@ jobs:
       
 workflows:
   version: 2
-  backend-deploy:
+  build-and-maybe-deploy:
     jobs:
+      - frontend-check
       - backend-check
       - frontend-check
       - backend-deploy-staging:
           requires:
             - backend-check
+            - frontend-check
           filters:
             branches:
               only: master
+
+      - frontend-deploy-staging:
+          requires:
+            - backend-deploy-staging
+            - frontend-check
+          filters:
+            branches:
+              only: master
+
+      - frontend-deploy-other-branch:
+          requires:
+            - frontend-check
+          filters:
+            branches:
+              ignore:
+                - master
+                - production
+      
       - backend-deploy-production:
           requires:
             - backend-check
+            - frontend-check
           filters:
             branches:
               only: production

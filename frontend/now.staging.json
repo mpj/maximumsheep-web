@@ -1,6 +1,8 @@
 {
   "version": 2,
   "scope": "maximumsheep",
+  "name": "maximumsheep-web-frontend",
+  "alias": "maximumsheep-web-frontend-staging.now.sh",
   "builds": [
     { "src": "next.config.js", "use": "@now/next" }
   ]

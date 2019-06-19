@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "ci": "npm run test && npm audit && npm run lint && npm run style",
     "test": "jest",
     "lint": "eslint --max-warnings 0 src",
     "lint:fix": "eslint --fix src",
-    "ci": "npm run lint && npm run test && npm audit",
     "style": "prettier --check \"src/**/*.js\"",
     "style:fix": "prettier --write \"src/**/*.js\""
   },

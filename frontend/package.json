@@ -13,6 +13,9 @@
     "style": "prettier --check \"helpers/**/*.js\" \"pages/**/*.js\"",
     "style:fix": "prettier --write \"helpers/**/*.js\" \"pages/**/*.js\""
   },
+  "prettier": {
+    "semi": false
+  },
   "dependencies": {
     "next": "^8.1.0",
     "react": "^16.8.6",

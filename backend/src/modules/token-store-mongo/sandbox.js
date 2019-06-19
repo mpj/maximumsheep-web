@@ -21,5 +21,4 @@ const loadRefreshToken = tokenStore.loadRefreshToken.bind(
 saveRefreshToken("apas").then(() =>
   // eslint-disable-next-line no-console
   loadRefreshToken().then(tkn => console.log("loaded token", tkn))
-  
 )

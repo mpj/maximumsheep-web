@@ -10,13 +10,28 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "backend/package-lock.json" }}
+            - v1-backend-dependencies-{{ checksum "backend/package-lock.json" }}
       - run: cd backend && npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "backend/package-lock.json" }}
+          key: v1-backend-dependencies-{{ checksum "backend/package-lock.json" }}
       - run: cd backend && npm run ci
+
+  frontend-check:
+    <<: *defaults
+    working_directory: ~/tmp
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-frontend-dependencies-{{ checksum "frontend/package-lock.json" }}
+      - run: cd frontend && npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-frontend-dependencies-{{ checksum "frontend/package-lock.json" }}
+      - run: cd frontend && npm run ci  
   
   backend-deploy-staging:
     <<: *defaults
@@ -37,6 +52,7 @@ workflows:
   backend-deploy:
     jobs:
       - backend-check
+      - frontend-check
       - backend-deploy-staging:
           requires:
             - backend-check

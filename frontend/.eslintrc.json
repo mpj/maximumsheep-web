@@ -23,7 +23,7 @@
   ],
   "rules": {
     "no-labels": [ "error", { "allowSwitch": true } ],
-    "react/react-in-jsx-scope": "off"
+    "react/jsx-uses-vars": "warn"
   },
   "env": {
     "jest/globals": true,

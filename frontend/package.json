@@ -8,10 +8,10 @@
     "start": "next start ./src",
     "ci": "npm run test && npm audit && npm run lint && npm run style",
     "test": "jest",
-    "lint": "eslint --max-warnings 0 helpers pages",
+    "lint": "eslint --max-warnings 0 src",
     "lint:fix": "eslint --fix src",
-    "style": "prettier --check \"helpers/**/*.js\" \"pages/**/*.js\"",
-    "style:fix": "prettier --write \"helpers/**/*.js\" \"pages/**/*.js\""
+    "style": "prettier --check \"src/**/*.js\"",
+    "style:fix": "prettier --write \"src/**/*.js\""
   },
   "prettier": {
     "semi": false

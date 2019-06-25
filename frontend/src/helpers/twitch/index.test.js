@@ -1,4 +1,4 @@
-const { getChannelId } = require(".")
+const twitch = require(".")
 
 describe("helpers/twitch", () => {
   describe("getChannelId", () => {
@@ -18,7 +18,7 @@ describe("helpers/twitch", () => {
           status: 200,
           text: () => Promise.resolve(someChannelId)
         }
-        result = await getChannelId(fetch, someOrigin, someSecret)
+        result = await twitch.getChannelId(fetch, someOrigin, someSecret)
       })
 
       it("calls fetch with correct url", () =>
@@ -49,15 +49,95 @@ describe("helpers/twitch", () => {
 
       it("throws error", () =>
         expect(
-          getChannelId(fetch, someOrigin, someSecret)
+          twitch.getChannelId(fetch, someOrigin, someSecret)
         ).rejects.toMatchObject({
           message:
             "Response status was not okay (secret was probably incorrect)"
         }))
     })
   })
+
+  describe("subscribeToTwitch", () => {
+    let WebSocket
+    let socketConstructedWithUrl
+    let givenEvent
+    let terminateWasCalled
+    let subscribeToTwitch
+    let sendWasCalledWith
+    beforeEach(() => {
+      let callbacks = {}
+      givenEvent = (topic, data) => callbacks[topic](data)
+
+      WebSocket = function(url) {
+        socketConstructedWithUrl = url
+        this.on = function(topic, callback) {
+          callbacks[topic] = callback
+        }
+        this.send = data => {
+          sendWasCalledWith = data
+        }
+        this.terminate = () => {
+          terminateWasCalled = true
+        }
+      }
+
+      subscribeToTwitch = twitch.subscribeToTwitch.bind(
+        null,
+        WebSocket,
+        someOrigin,
+        someTopic,
+        someChannelId,
+        someToken
+      )
+    })
+
+    it("uses correct twitch endpoint", () => {
+      subscribeToTwitch(() => {})
+      expect(socketConstructedWithUrl).toBe("wss://pubsub-edge.twitch.tv")
+    })
+
+    it("sends listenting message after it sees socket is open", () => {
+      subscribeToTwitch(() => {})
+      expect(sendWasCalledWith).toBeUndefined()
+      givenEvent("open")
+      expect(sendWasCalledWith).toBe(
+        JSON.stringify({
+          type: "LISTEN",
+          data: {
+            topics: [someTopic + "." + someChannelId],
+            auth_token: someToken
+          }
+        })
+      )
+    })
+
+    it("forwards payload to callback", () => {
+      let callbackGotPayload
+      subscribeToTwitch(payload => {
+        callbackGotPayload = payload
+      })
+      expect(callbackGotPayload).toBeUndefined()
+      givenEvent("message", somePayload)
+      expect(callbackGotPayload).toBe(somePayload)
+    })
+
+    it("terminates the connection when calling cancel", () => {
+      const cancel = subscribeToTwitch(() => {})
+      expect(terminateWasCalled).toBeUndefined()
+      cancel()
+      expect(terminateWasCalled).toBe(true)
+    })
+
+    it.skip("pings every 30 seconds")
+    it.skip("reconnects if no pong efter 10 seconds after ping")
+  })
 })
 
 const someOrigin = "https://myapp.com"
 const someSecret = "someSecret"
+const someTopic = "someTopic"
 const someChannelId = "someChannelId"
+const someToken = "someToken"
+const somePayload = JSON.stringify({
+  type: "SOMEPAYLOADTYPE"
+})

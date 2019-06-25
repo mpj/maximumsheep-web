@@ -130,6 +130,9 @@ describe("helpers/twitch", () => {
 
     it.skip("pings every 30 seconds")
     it.skip("reconnects if no pong efter 10 seconds after ping")
+    it.skip("test request token")
+    it.skip("channelid endpoint should use token")
+    
   })
 })
 

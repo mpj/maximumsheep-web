@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
+    "dev": "next ./src",
+    "build": "next build ./src",
+    "start": "next start ./src",
     "ci": "npm run test && npm audit && npm run lint && npm run style",
     "test": "jest",
     "lint": "eslint --max-warnings 0 helpers pages",

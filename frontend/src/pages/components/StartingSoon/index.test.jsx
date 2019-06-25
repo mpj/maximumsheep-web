@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { shallow, configure } from 'enzyme'
-import StartingSoon from './index'
+import StartingSoon from '.'
 import Adapter from 'enzyme-adapter-react-16';
 
 describe('<StartingSoon />', () => {

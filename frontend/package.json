@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "now-build": "npm run build",
     "dev": "next ./src",
     "build": "next build ./src",
     "start": "next start ./src",

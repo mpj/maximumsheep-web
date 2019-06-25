@@ -1,13 +1,15 @@
-module.exports = function () {
+module.exports = function (wallaby) {
   return {
     files: [
-      'pages/**/*.js',
       'package-lock.json',
-      '!src/**/test.js',
+      'pages/**/*.js?(x)',
+      '!pages/**/*.test.js?(x)',
+      'helpers/**/*.js?(x)',
+      '!helpers/**/*.test.js?(x)',
     ],  
 
     tests: [
-      'pages/**/test.js',
+      'pages/**/*.test.js?(x)',
     ],
 
     env: {
@@ -15,6 +17,10 @@ module.exports = function () {
       runner: 'node',
     },
 
+    compilers: {
+      '**/*.js?(x)': wallaby.compilers.babel()
+    },
+    
     testFramework: 'jest'
   }
 }

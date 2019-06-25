@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "now-build": "npm run build",
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
+    "start": "now dev",
     "ci": "npm run test && npm audit && npm run lint && npm run style",
     "test": "jest",
     "lint": "eslint --max-warnings 0 src",

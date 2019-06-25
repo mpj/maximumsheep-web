@@ -4,9 +4,9 @@
   "main": "index.js",
   "scripts": {
     "now-build": "npm run build",
-    "dev": "next ./src",
-    "build": "next build ./src",
-    "start": "next start ./src",
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
     "ci": "npm run test && npm audit && npm run lint && npm run style",
     "test": "jest",
     "lint": "eslint --max-warnings 0 src",

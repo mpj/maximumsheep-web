@@ -89,7 +89,6 @@ describe("helpers/twitch", () => {
       subscribeToTwitch = twitch.subscribeToTwitch.bind(
         null,
         WebSocket,
-        someOrigin,
         someTopic,
         someChannelId,
         someToken
@@ -148,13 +147,17 @@ describe("helpers/twitch", () => {
       jest.advanceTimersByTime(1)
       expect(webSocketInstance.send.mock.calls.length).toBe(2)
     })
-    
+
+    it.todo("handle pongs")
+    it.todo("fails if socket never opens")
+    it.todo("refactor to generator")    
   })
 
-  it.todo("handle pings")
+ 
   it.todo("test request token")
   it.todo("channelid endpoint should use token")
-  it.todo("fails if socket never opens")
+  
+  
 })
 
 const someOrigin = "https://myapp.com"

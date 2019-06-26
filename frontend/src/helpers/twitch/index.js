@@ -41,7 +41,6 @@ module.exports.getAccessToken = async function getAccessToken(
 
 module.exports.subscribeToTwitch = function subscribeToTwitch(
   WebSocket,
-  origin,
   topicName,
   channelId,
   oAuthAccessToken,

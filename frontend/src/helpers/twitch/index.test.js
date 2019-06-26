@@ -64,21 +64,26 @@ describe("helpers/twitch", () => {
     let terminateWasCalled
     let subscribeToTwitch
     let sendWasCalledWith
+    let webSocketInstance = null
+    
     beforeEach(() => {
+      jest.useFakeTimers();
       let callbacks = {}
       givenEvent = (topic, data) => callbacks[topic](data)
 
       WebSocket = function(url) {
+        expect(webSocketInstance).toBe(null)
         socketConstructedWithUrl = url
         this.on = function(topic, callback) {
           callbacks[topic] = callback
         }
-        this.send = data => {
+        this.send = jest.fn(data => {
           sendWasCalledWith = data
-        }
+        })
         this.terminate = () => {
           terminateWasCalled = true
         }
+        webSocketInstance = this
       }
 
       subscribeToTwitch = twitch.subscribeToTwitch.bind(
@@ -89,6 +94,11 @@ describe("helpers/twitch", () => {
         someChannelId,
         someToken
       )
+    })
+
+    afterEach(() => {
+      webSocketInstance = null
+      jest.clearAllTimers()
     })
 
     it("uses correct twitch endpoint", () => {
@@ -116,6 +126,7 @@ describe("helpers/twitch", () => {
       subscribeToTwitch(payload => {
         callbackGotPayload = payload
       })
+      givenEvent("open")
       expect(callbackGotPayload).toBeUndefined()
       givenEvent("message", somePayload)
       expect(callbackGotPayload).toBe(somePayload)
@@ -128,12 +139,22 @@ describe("helpers/twitch", () => {
       expect(terminateWasCalled).toBe(true)
     })
 
-    it.skip("pings every 30 seconds")
-    it.skip("reconnects if no pong efter 10 seconds after ping")
-    it.skip("test request token")
-    it.skip("channelid endpoint should use token")
+    it("pings every 30 seconds", () => {
+      subscribeToTwitch(() => { })
+      givenEvent("open")
+      expect(webSocketInstance.send.mock.calls.length).toBe(1)
+      jest.advanceTimersByTime(29999)
+      expect(webSocketInstance.send.mock.calls.length).toBe(1)
+      jest.advanceTimersByTime(1)
+      expect(webSocketInstance.send.mock.calls.length).toBe(2)
+    })
     
   })
+
+  it.todo("handle pings")
+  it.todo("test request token")
+  it.todo("channelid endpoint should use token")
+  it.todo("fails if socket never opens")
 })
 
 const someOrigin = "https://myapp.com"

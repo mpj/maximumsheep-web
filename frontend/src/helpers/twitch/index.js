@@ -54,11 +54,15 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
       JSON.stringify({
         type: "LISTEN",
         data: {
-          topics: [topicName + "." + channelId],
+          topics: [ topicName + "." + channelId ],
           auth_token: oAuthAccessToken
         }
       })
     )
+
+    setInterval(() => {
+      socket.send(JSON.stringify({ "type": "PING" }))
+    }, 30000);
   })
 
   socket.on("message", callback)

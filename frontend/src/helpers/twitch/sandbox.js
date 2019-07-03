@@ -25,8 +25,7 @@ const getAccessToken = twitch.getAccessToken.bind(
 
 const subscribeToTwitch = twitch.subscribeToTwitch.bind(
   null,
-  WebSocket,
-  origins.staging
+  WebSocket
 )
 
 ;(async function tryChannelId() {

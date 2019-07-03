@@ -156,6 +156,34 @@ describe("helpers/twitch", () => {
       expect(callbackGotPayload.displayName).toBe('DoudeMan')
     })
 
+    it("does not forward responses", () => {
+      const { onNewSubscriber } = subscribeToTwitch()
+      let callbackGotPayload
+      onNewSubscriber(payload => {
+        callbackGotPayload = payload
+      })
+      givenEvent("open")
+      givenEvent("message", JSON.stringify({ 
+        type: 'RESPONSE', 
+        error: '', 
+        nonce: '' 
+      }))
+      expect(callbackGotPayload).toBeUndefined()
+    })
+
+    it("does not forward pongs", () => {
+      const { onNewSubscriber } = subscribeToTwitch()
+      let callbackGotPayload
+      onNewSubscriber(payload => {
+        callbackGotPayload = payload
+      })
+      givenEvent("open")
+      givenEvent("message", JSON.stringify({ 
+        type: 'PONG', 
+      }))
+      expect(callbackGotPayload).toBeUndefined()
+    })
+
     it("terminates the connection when calling cancel", () => {
       const { cancel } = subscribeToTwitch(() => {})
       expect(terminateWasCalled).toBeUndefined()

@@ -149,6 +149,7 @@ describe("helpers/twitch", () => {
     })
 
     it.todo("handle pongs")
+    it.todo("error if no pong")
     it.todo("fails if socket never opens")
     it.todo("refactor to generator")    
   })

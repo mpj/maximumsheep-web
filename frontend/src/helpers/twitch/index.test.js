@@ -132,7 +132,7 @@ describe("helpers/twitch", () => {
     })
 
     it("terminates the connection when calling cancel", () => {
-      const cancel = subscribeToTwitch(() => {})
+      const { cancel } = subscribeToTwitch(() => {})
       expect(terminateWasCalled).toBeUndefined()
       cancel()
       expect(terminateWasCalled).toBe(true)

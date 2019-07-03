@@ -66,7 +66,9 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
 
   socket.on("message", callback)
 
-  return function cancel() {
-    socket.terminate()
+  return {
+    cancel() {
+      socket.terminate()
+    }
   }
 }

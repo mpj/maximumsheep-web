@@ -66,8 +66,8 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
     }, 30000);
   })
 
-  socket.on("message", function(payload) {
-    callback(payload)
+  socket.on("message", function(payloadString) {
+    const payload = JSON.parse(payloadString)
     if(payload.type === 'MESSAGE') {
       const messageData = JSON.parse(payload.data.message)
       onNewSubscriberHandler({

@@ -120,16 +120,6 @@ describe("helpers/twitch", () => {
       )
     })
 
-    it("forwards payload to callback", () => {
-      let callbackGotPayload
-      subscribeToTwitch(payload => {
-        callbackGotPayload = payload
-      })
-      givenEvent("open")
-      expect(callbackGotPayload).toBeUndefined()
-      givenEvent("message", somePayload)
-      expect(callbackGotPayload).toBe(somePayload)
-    })
 
     it("formats subscription events to onTwitchSubscription", () => {
       const noop = () => {} // TODO gtfo
@@ -140,7 +130,7 @@ describe("helpers/twitch", () => {
       })
       givenEvent("open")
       expect(callbackGotPayload).toBeUndefined()
-      givenEvent("message", {
+      givenEvent("message", JSON.stringify({
         "type": "MESSAGE",
         "data": {
           "topic": "channel-subscribe-events-v1.119879569",
@@ -162,7 +152,7 @@ describe("helpers/twitch", () => {
             "context": "sub"
           })
         }
-      })
+      }))
       expect(callbackGotPayload.displayName).toBe('DoudeMan')
     })
 

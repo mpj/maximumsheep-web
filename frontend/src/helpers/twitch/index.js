@@ -46,6 +46,8 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
   oAuthAccessToken,
   callback
 ) {
+
+  let onNewSubscriberHandler
   const socket = new WebSocket("wss://pubsub-edge.twitch.tv")
 
   socket.on("open", function open() {
@@ -64,11 +66,22 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
     }, 30000);
   })
 
-  socket.on("message", callback)
+  socket.on("message", function(payload) {
+    callback(payload)
+    if(payload.type === 'MESSAGE') {
+      const messageData = JSON.parse(payload.data.message)
+      onNewSubscriberHandler({
+        displayName: messageData.display_name
+      })
+    }
+  })
 
   return {
     cancel() {
       socket.terminate()
+    },
+    onNewSubscriber(handler) {
+      onNewSubscriberHandler = handler
     }
   }
 }

@@ -131,6 +131,41 @@ describe("helpers/twitch", () => {
       expect(callbackGotPayload).toBe(somePayload)
     })
 
+    it("formats subscription events to onTwitchSubscription", () => {
+      const noop = () => {} // TODO gtfo
+      const { onNewSubscriber } = subscribeToTwitch(noop)
+      let callbackGotPayload
+      onNewSubscriber(payload => {
+        callbackGotPayload = payload
+      })
+      givenEvent("open")
+      expect(callbackGotPayload).toBeUndefined()
+      givenEvent("message", {
+        "type": "MESSAGE",
+        "data": {
+          "topic": "channel-subscribe-events-v1.119879569",
+          "message": JSON.stringify({
+            "user_name": "doudeman",
+            "display_name": "DoudeMan",
+            "channel_name": "funfunfunction",
+            "user_id": "83881076",
+            "channel_id": "119879569",
+            "time":"2019-07-01T15:41:55.136308346Z",
+            "sub_message": { 
+              "message": "",
+              "emotes": null
+            }, 
+            "sub_plan": "Prime", 
+            "sub_plan_name": "Channel Subscription (funfunfunction)",
+            "months":0, 
+            "cumulative_months":1, 
+            "context": "sub"
+          })
+        }
+      })
+      expect(callbackGotPayload.displayName).toBe('DoudeMan')
+    })
+
     it("terminates the connection when calling cancel", () => {
       const { cancel } = subscribeToTwitch(() => {})
       expect(terminateWasCalled).toBeUndefined()

@@ -120,34 +120,55 @@ describe("helpers/twitch", () => {
       )
     })
 
+    describe('handlers', () => {
+      let onNewSubscriberHandlerGotPayload
+      let onSubGiftHandlerGotPayload
+      beforeEach(() => {
+        const { onNewSubscriber, onSubGift } = subscribeToTwitch()
+        
+        onNewSubscriber(payload => { onNewSubscriberHandlerGotPayload = payload })
+        onSubGift(payload => { onSubGiftHandlerGotPayload = payload })
+      })
 
-    it("formats subscription events to onTwitchSubscription", () => {
-      const { onNewSubscriber, onSubGift } = subscribeToTwitch()
-      let callbackGotPayload
-      let onSubGiftWasCalled = false
-      onNewSubscriber(payload => {
-        callbackGotPayload = payload
-      })
-      onSubGift(() => {
-        onSubGiftWasCalled = true
-      })
-      givenEvent("open")
-      expect(callbackGotPayload).toBeUndefined()
-      givenEvent("message", JSON.stringify({
-        "type": "MESSAGE",
-        "data": {
-          "topic": "channel-subscribe-events-v1.119879569",
-          "message": JSON.stringify({
-            "display_name": "DoudeMan",
-            "cumulative_months":1, 
-            "context": "sub"
+      describe('given open event', () => {
+        beforeEach(() => {
+          givenEvent("open")
+        })
+
+        it('does NOT trigger handlers', () => {
+          expect(onNewSubscriberHandlerGotPayload).toBeUndefined()
+          expect(onSubGiftHandlerGotPayload).toBeUndefined()
+        })
+
+        describe('given sub event', () => {
+          beforeEach(() => {
+            givenEvent("message", JSON.stringify({
+              "type": "MESSAGE",
+              "data": {
+                "topic": "channel-subscribe-events-v1.119879569",
+                "message": JSON.stringify({
+                  "display_name": "DoudeMan",
+                  "cumulative_months":1, 
+                  "context": "sub"
+                })
+              }
+            }))
           })
-        }
-      }))
-      expect(callbackGotPayload.displayName).toBe('DoudeMan')
-      expect(callbackGotPayload.cumulativeMonths).toBe(1)
-      expect(onSubGiftWasCalled).toBe(false)
+
+          it('calls onNewSubscriber handler with displayName', () => {
+            expect(onNewSubscriberHandlerGotPayload.displayName).toBe('DoudeMan')
+          })
+
+          it('does NOT call onSubGift', () => {
+            expect(onSubGiftHandlerGotPayload).toBeUndefined()
+          })
+          
+        })
+
+      })
+
     })
+
 
     it('format resub events for onTwitchSubscription', () => {
        const { onNewSubscriber, onSubGift } = subscribeToTwitch()

@@ -122,8 +122,7 @@ describe("helpers/twitch", () => {
 
 
     it("formats subscription events to onTwitchSubscription", () => {
-      const noop = () => {} // TODO gtfo
-      const { onNewSubscriber } = subscribeToTwitch(noop)
+      const { onNewSubscriber } = subscribeToTwitch()
       let callbackGotPayload
       onNewSubscriber(payload => {
         callbackGotPayload = payload

@@ -149,6 +149,34 @@ describe("helpers/twitch", () => {
       expect(onSubGiftWasCalled).toBe(false)
     })
 
+    it('format resub events for onTwitchSubscription', () => {
+       const { onNewSubscriber, onSubGift } = subscribeToTwitch()
+      let callbackGotPayload
+      let onSubGiftWasCalled = false
+      onNewSubscriber(payload => {
+        callbackGotPayload = payload
+      })
+      onSubGift(() => {
+        onSubGiftWasCalled = true
+      })
+      givenEvent("open")
+      expect(callbackGotPayload).toBeUndefined()
+      givenEvent("message", JSON.stringify({
+        "type": "MESSAGE",
+        "data": {
+          "topic": "channel-subscribe-events-v1.119879569",
+          "message": JSON.stringify({
+            "display_name": "SomeGuy",
+            "cumulative_months":4, 
+            "context": "resub"
+          })
+        }
+      }))
+      expect(callbackGotPayload.displayName).toBe('SomeGuy')
+      expect(callbackGotPayload.cumulativeMonths).toBe(4)
+      expect(onSubGiftWasCalled).toBe(false)
+    })
+
     describe('given someone gifts a sub to someone else', () => {
       let callbackGotPayload
       let onNewSubscriberWasCalled = false

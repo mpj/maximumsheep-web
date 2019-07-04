@@ -68,14 +68,16 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
   })
 
   socket.on("message", function(payloadString) {
-    console.log('payloadString', payloadString)
     const payload = JSON.parse(payloadString)
     if(payload.type === 'MESSAGE') {
       const messageData = JSON.parse(payload.data.message)
-      if(messageData.context === 'sub' && onNewSubscriberHandler) onNewSubscriberHandler({
-        displayName: messageData.display_name,
-        cumulativeMonths: messageData.cumulative_months
-      })
+      if(messageData.context === 'sub' || messageData.context === 'resub') {
+        if (onNewSubscriberHandler) onNewSubscriberHandler({
+          displayName: messageData.display_name,
+          cumulativeMonths: messageData.cumulative_months
+        })
+      }
+        
       if(messageData.context === 'subgift' && onSubGiftHandler) onSubGiftHandler({
         displayName: messageData.display_name,
         recipientDisplayName: messageData.recipient_display_name

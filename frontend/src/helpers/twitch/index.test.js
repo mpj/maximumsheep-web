@@ -124,16 +124,21 @@ describe("helpers/twitch", () => {
       let onNewSubscriberHandlerGotPayload
       let onSubGiftHandlerGotPayload
       let onResubscribeHandlerGotPayload
+      let onAnonSubcriptionHandlerGotPayload
       beforeEach(() => {
         onNewSubscriberHandlerGotPayload = null
         onSubGiftHandlerGotPayload = null
         onResubscribeHandlerGotPayload = null
+        onAnonSubcriptionHandlerGotPayload = null
 
-        const { onNewSubscriber, onResubscribe, onSubGift } = subscribeToTwitch()
+        const { onNewSubscriber, onResubscribe, onSubGift, onAnonSubGift } = subscribeToTwitch()
         
         onNewSubscriber(payload => { onNewSubscriberHandlerGotPayload = payload })
         onSubGift(payload => { onSubGiftHandlerGotPayload = payload })
         onResubscribe(payload => { onResubscribeHandlerGotPayload = payload })
+        onAnonSubGift(payload => { onAnonSubcriptionHandlerGotPayload = payload })
+        
+        onAnonSubcriptionHandlerGotPayload
       })
 
       describe('given open event', () => {
@@ -160,6 +165,7 @@ describe("helpers/twitch", () => {
             expect(onNewSubscriberHandlerGotPayload).toBe(null)
             expect(onResubscribeHandlerGotPayload).toBe(null)
             expect(onSubGiftHandlerGotPayload).toBe(null)
+            expect(onAnonSubcriptionHandlerGotPayload).toBe(null)
           })
 
         })
@@ -244,6 +250,25 @@ describe("helpers/twitch", () => {
           expect(onNewSubscriberHandlerGotPayload).toBe(null)
         })
 
+      })
+
+      describe('given an anoymous person gifts a sub to someone', () => {
+        beforeEach(() => {
+            givenEvent("message", JSON.stringify({
+            "type": "MESSAGE",
+            "data": {
+              "topic": "channel-subscribe-events-v1.44322889",
+              "message": JSON.stringify({
+                "context": "anonsubgift",
+                "recipient_display_name": "TWW2",
+              })
+            }
+          }))
+        })
+
+        it('calls onAnonSubGift with recipientDisplayName', () => {
+          expect(onAnonSubcriptionHandlerGotPayload.recipientDisplayName).toBe('TWW2')
+        })
       })
     })
 

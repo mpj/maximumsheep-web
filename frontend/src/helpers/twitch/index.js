@@ -49,6 +49,7 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
   let onNewSubscriberHandler
   let onSubGiftHandler
   let onResubscribeHandler
+  let onAnonSubGiftHandler
   const socket = new WebSocket("wss://pubsub-edge.twitch.tv")
 
   socket.on("open", function open() {
@@ -88,6 +89,10 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
         displayName: messageData.display_name,
         recipientDisplayName: messageData.recipient_display_name
       })
+
+      if (messageData.context === 'anonsubgift' && onAnonSubGiftHandler) onAnonSubGiftHandler({
+        recipientDisplayName: messageData.recipient_display_name
+      })
     }
   })
 
@@ -103,6 +108,9 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
     },
     onSubGift(handler) {
       onSubGiftHandler = handler
+    },
+    onAnonSubGift(handler) {
+      onAnonSubGiftHandler = handler
     }
   }
 }

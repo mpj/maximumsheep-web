@@ -43,12 +43,12 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
   WebSocket,
   topicName,
   channelId,
-  oAuthAccessToken,
-  callback
+  oAuthAccessToken
 ) {
 
   let onNewSubscriberHandler
   let onSubGiftHandler
+  let onResubscribeHandler
   const socket = new WebSocket("wss://pubsub-edge.twitch.tv")
 
   socket.on("open", function open() {
@@ -71,8 +71,14 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
     const payload = JSON.parse(payloadString)
     if(payload.type === 'MESSAGE') {
       const messageData = JSON.parse(payload.data.message)
-      if(messageData.context === 'sub' || messageData.context === 'resub') {
+      if(messageData.context === 'sub') {
         if (onNewSubscriberHandler) onNewSubscriberHandler({
+          displayName: messageData.display_name
+        })
+      }
+
+      if (messageData.context === 'resub' && onResubscribeHandler) {
+        onResubscribeHandler({
           displayName: messageData.display_name,
           cumulativeMonths: messageData.cumulative_months
         })
@@ -91,6 +97,9 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
     },
     onNewSubscriber(handler) {
       onNewSubscriberHandler = handler
+    },
+    onResubscribe(handler) {
+      onResubscribeHandler = handler
     },
     onSubGift(handler) {
       onSubGiftHandler = handler

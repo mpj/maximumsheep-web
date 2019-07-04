@@ -101,12 +101,12 @@ describe("helpers/twitch", () => {
     })
 
     it("uses correct twitch endpoint", () => {
-      subscribeToTwitch(() => {})
+      subscribeToTwitch()
       expect(socketConstructedWithUrl).toBe("wss://pubsub-edge.twitch.tv")
     })
 
     it("sends listenting message after it sees socket is open", () => {
-      subscribeToTwitch(() => {})
+      subscribeToTwitch()
       expect(sendWasCalledWith).toBeUndefined()
       givenEvent("open")
       expect(sendWasCalledWith).toBe(
@@ -123,11 +123,13 @@ describe("helpers/twitch", () => {
     describe('handlers', () => {
       let onNewSubscriberHandlerGotPayload
       let onSubGiftHandlerGotPayload
+      let onResubscribeHandlerGotPayload
       beforeEach(() => {
-        const { onNewSubscriber, onSubGift } = subscribeToTwitch()
+        const { onNewSubscriber, onResubscribe, onSubGift } = subscribeToTwitch()
         
         onNewSubscriber(payload => { onNewSubscriberHandlerGotPayload = payload })
         onSubGift(payload => { onSubGiftHandlerGotPayload = payload })
+        onResubscribe(payload => { onResubscribeHandlerGotPayload = payload })
       })
 
       describe('given open event', () => {
@@ -137,6 +139,7 @@ describe("helpers/twitch", () => {
 
         it('does NOT trigger handlers', () => {
           expect(onNewSubscriberHandlerGotPayload).toBeUndefined()
+          expect(onResubscribeHandlerGotPayload).toBeUndefined()
           expect(onSubGiftHandlerGotPayload).toBeUndefined()
         })
 
@@ -162,40 +165,33 @@ describe("helpers/twitch", () => {
           it('does NOT call onSubGift', () => {
             expect(onSubGiftHandlerGotPayload).toBeUndefined()
           })
-          
+        })
+
+        describe('given resub event', () => {
+          beforeEach(() => {
+            givenEvent("message", JSON.stringify({
+              "type": "MESSAGE",
+              "data": {
+                "topic": "channel-subscribe-events-v1.119879569",
+                "message": JSON.stringify({
+                  "display_name": "SomeGuy",
+                  "cumulative_months":4, 
+                  "context": "resub"
+                })
+              }
+            }))
+          })
+
+          it('forwards displayName', () => {
+            expect(onResubscribeHandlerGotPayload.displayName).toBe('SomeGuy')
+          })
+
+          it('forwards cumulativeMonths', () => {
+            expect(onResubscribeHandlerGotPayload.cumulativeMonths).toBe(4)
+          })
         })
 
       })
-
-    })
-
-
-    it('format resub events for onTwitchSubscription', () => {
-       const { onNewSubscriber, onSubGift } = subscribeToTwitch()
-      let callbackGotPayload
-      let onSubGiftWasCalled = false
-      onNewSubscriber(payload => {
-        callbackGotPayload = payload
-      })
-      onSubGift(() => {
-        onSubGiftWasCalled = true
-      })
-      givenEvent("open")
-      expect(callbackGotPayload).toBeUndefined()
-      givenEvent("message", JSON.stringify({
-        "type": "MESSAGE",
-        "data": {
-          "topic": "channel-subscribe-events-v1.119879569",
-          "message": JSON.stringify({
-            "display_name": "SomeGuy",
-            "cumulative_months":4, 
-            "context": "resub"
-          })
-        }
-      }))
-      expect(callbackGotPayload.displayName).toBe('SomeGuy')
-      expect(callbackGotPayload.cumulativeMonths).toBe(4)
-      expect(onSubGiftWasCalled).toBe(false)
     })
 
     describe('given someone gifts a sub to someone else', () => {
@@ -302,6 +298,3 @@ const someSecret = "someSecret"
 const someTopic = "someTopic"
 const someChannelId = "someChannelId"
 const someToken = "someToken"
-const somePayload = JSON.stringify({
-  type: "SOMEPAYLOADTYPE"
-})

@@ -282,8 +282,7 @@ describe("helpers/twitch", () => {
       expect(webSocketInstance.send.mock.calls.length).toBe(2)
     })
 
-    it.todo("handle pongs")
-    it.todo("error if no pong")
+    it.todo("error if no pong witin 10 seconds after ping")
     it.todo("fails if socket never opens")
     it.todo("refactor to generator")    
   })

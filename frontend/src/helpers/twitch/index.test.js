@@ -125,6 +125,10 @@ describe("helpers/twitch", () => {
       let onSubGiftHandlerGotPayload
       let onResubscribeHandlerGotPayload
       beforeEach(() => {
+        onNewSubscriberHandlerGotPayload = null
+        onSubGiftHandlerGotPayload = null
+        onResubscribeHandlerGotPayload = null
+
         const { onNewSubscriber, onResubscribe, onSubGift } = subscribeToTwitch()
         
         onNewSubscriber(payload => { onNewSubscriberHandlerGotPayload = payload })
@@ -138,9 +142,9 @@ describe("helpers/twitch", () => {
         })
 
         it('does NOT trigger handlers', () => {
-          expect(onNewSubscriberHandlerGotPayload).toBeUndefined()
-          expect(onResubscribeHandlerGotPayload).toBeUndefined()
-          expect(onSubGiftHandlerGotPayload).toBeUndefined()
+          expect(onNewSubscriberHandlerGotPayload).toBe(null)
+          expect(onResubscribeHandlerGotPayload).toBe(null)
+          expect(onSubGiftHandlerGotPayload).toBe(null)
         })
 
         describe('given response event', () => {
@@ -153,9 +157,9 @@ describe("helpers/twitch", () => {
           })
 
           it('does NOT trigger handlers', () => {
-            expect(onNewSubscriberHandlerGotPayload).toBeUndefined()
-            expect(onResubscribeHandlerGotPayload).toBeUndefined()
-            expect(onSubGiftHandlerGotPayload).toBeUndefined()
+            expect(onNewSubscriberHandlerGotPayload).toBe(null)
+            expect(onResubscribeHandlerGotPayload).toBe(null)
+            expect(onSubGiftHandlerGotPayload).toBe(null)
           })
 
         })
@@ -180,7 +184,7 @@ describe("helpers/twitch", () => {
           })
 
           it('does NOT call onSubGift', () => {
-            expect(onSubGiftHandlerGotPayload).toBeUndefined()
+            expect(onSubGiftHandlerGotPayload).toBe(null)
           })
         })
 
@@ -209,47 +213,38 @@ describe("helpers/twitch", () => {
         })
 
       })
-    })
 
-    describe('given someone gifts a sub to someone else', () => {
-      let callbackGotPayload
-      let onNewSubscriberWasCalled = false
-      beforeEach(() => {
-        const { onSubGift, onNewSubscriber } = subscribeToTwitch()
-        onSubGift(payload => {
-          callbackGotPayload = payload
+      describe('given someone gifts a sub to someone else', () => {
+        beforeEach(() => {
+          givenEvent("message", JSON.stringify({
+            "type": "MESSAGE",
+              "data": {
+                "topic": "channel-subscribe-events-v1.119879569",
+                "message": JSON.stringify({
+                  "display_name": "funfunfunction",
+                  "recipient_display_name": "noopkat",
+                  "context": "subgift"
+                  // Why no months? There is currently no way to gift more
+                  // than one month in Twitch UI and I don't see them
+                  // adding that - more fun to gift to many instead
+                })
+              }
+            }))
         })
-        onNewSubscriber(() => {
-          onNewSubscriberWasCalled = true
+        
+        it('calls onSubGift handler with displayName', () => {
+          expect(onSubGiftHandlerGotPayload.displayName).toBe('funfunfunction')
         })
-        givenEvent("message", JSON.stringify({
-          "type": "MESSAGE",
-            "data": {
-              "topic": "channel-subscribe-events-v1.119879569",
-              "message": JSON.stringify({
-                "display_name": "funfunfunction",
-                "recipient_display_name": "noopkat",
-                "context": "subgift"
-                // Why no months? There is currently no way to gift more
-                // than one month in Twitch UI and I don't see them
-                // adding that - more fun to gift to many instead
-              })
-            }
-          }))
-      })
-      
-      it('calls onSubGift handler with displayName', () => {
-        expect(callbackGotPayload.displayName).toBe('funfunfunction')
-      })
 
-      it('calls onSubGift handler with recipientDisplayName', () => {
-        expect(callbackGotPayload.recipientDisplayName).toBe('noopkat')
-      })
+        it('calls onSubGift handler with recipientDisplayName', () => {
+          expect(onSubGiftHandlerGotPayload.recipientDisplayName).toBe('noopkat')
+        })
 
-      it('does NOT call onNewSubscriber', () => {
-        expect(onNewSubscriberWasCalled).toBe(false)
-      })
+        it('does NOT call onNewSubscriber', () => {
+          expect(onNewSubscriberHandlerGotPayload).toBe(null)
+        })
 
+      })
     })
 
     it("does not forward pongs", () => {

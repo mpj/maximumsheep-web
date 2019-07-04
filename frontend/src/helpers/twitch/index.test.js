@@ -122,10 +122,14 @@ describe("helpers/twitch", () => {
 
 
     it("formats subscription events to onTwitchSubscription", () => {
-      const { onNewSubscriber } = subscribeToTwitch()
+      const { onNewSubscriber, onSubGift } = subscribeToTwitch()
       let callbackGotPayload
+      let onSubGiftWasCalled = false
       onNewSubscriber(payload => {
         callbackGotPayload = payload
+      })
+      onSubGift(() => {
+        onSubGiftWasCalled = true
       })
       givenEvent("open")
       expect(callbackGotPayload).toBeUndefined()
@@ -135,12 +139,55 @@ describe("helpers/twitch", () => {
           "topic": "channel-subscribe-events-v1.119879569",
           "message": JSON.stringify({
             "display_name": "DoudeMan",
-            "cumulative_months":617, 
+            "cumulative_months":1, 
+            "context": "sub"
           })
         }
       }))
       expect(callbackGotPayload.displayName).toBe('DoudeMan')
-      expect(callbackGotPayload.cumulativeMonths).toBe(617)
+      expect(callbackGotPayload.cumulativeMonths).toBe(1)
+      expect(onSubGiftWasCalled).toBe(false)
+    })
+
+    describe('given someone gifts a sub to someone else', () => {
+      let callbackGotPayload
+      let onNewSubscriberWasCalled = false
+      beforeEach(() => {
+        const { onSubGift, onNewSubscriber } = subscribeToTwitch()
+        onSubGift(payload => {
+          callbackGotPayload = payload
+        })
+        onNewSubscriber(() => {
+          onNewSubscriberWasCalled = true
+        })
+        givenEvent("message", JSON.stringify({
+          "type": "MESSAGE",
+            "data": {
+              "topic": "channel-subscribe-events-v1.119879569",
+              "message": JSON.stringify({
+                "display_name": "funfunfunction",
+                "recipient_display_name": "noopkat",
+                "context": "subgift"
+                // Why no months? There is currently no way to gift more
+                // than one month in Twitch UI and I don't see them
+                // adding that - more fun to gift to many instead
+              })
+            }
+          }))
+      })
+      
+      it('calls onSubGift handler with displayName', () => {
+        expect(callbackGotPayload.displayName).toBe('funfunfunction')
+      })
+
+      it('calls onSubGift handler with recipientDisplayName', () => {
+        expect(callbackGotPayload.recipientDisplayName).toBe('noopkat')
+      })
+
+      it('does NOT call onNewSubscriber', () => {
+        expect(onNewSubscriberWasCalled).toBe(false)
+      })
+
     })
 
     it("does not forward responses", () => {

@@ -134,21 +134,8 @@ describe("helpers/twitch", () => {
         "data": {
           "topic": "channel-subscribe-events-v1.119879569",
           "message": JSON.stringify({
-            "user_name": "doudeman",
             "display_name": "DoudeMan",
-            "channel_name": "funfunfunction",
-            "user_id": "83881076",
-            "channel_id": "119879569",
-            "time":"2019-07-01T15:41:55.136308346Z",
-            "sub_message": { 
-              "message": "",
-              "emotes": null
-            }, 
-            "sub_plan": "Prime", 
-            "sub_plan_name": "Channel Subscription (funfunfunction)",
-            "months":0, 
             "cumulative_months":617, 
-            "context": "sub"
           })
         }
       }))

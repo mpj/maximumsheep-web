@@ -143,6 +143,23 @@ describe("helpers/twitch", () => {
           expect(onSubGiftHandlerGotPayload).toBeUndefined()
         })
 
+        describe('given response event', () => {
+          beforeEach(() => {
+            givenEvent("message", JSON.stringify({ 
+              type: 'RESPONSE', 
+              error: '', 
+              nonce: '' 
+            }))
+          })
+
+          it('does NOT trigger handlers', () => {
+            expect(onNewSubscriberHandlerGotPayload).toBeUndefined()
+            expect(onResubscribeHandlerGotPayload).toBeUndefined()
+            expect(onSubGiftHandlerGotPayload).toBeUndefined()
+          })
+
+        })
+
         describe('given sub event', () => {
           beforeEach(() => {
             givenEvent("message", JSON.stringify({
@@ -233,21 +250,6 @@ describe("helpers/twitch", () => {
         expect(onNewSubscriberWasCalled).toBe(false)
       })
 
-    })
-
-    it("does not forward responses", () => {
-      const { onNewSubscriber } = subscribeToTwitch()
-      let callbackGotPayload
-      onNewSubscriber(payload => {
-        callbackGotPayload = payload
-      })
-      givenEvent("open")
-      givenEvent("message", JSON.stringify({ 
-        type: 'RESPONSE', 
-        error: '', 
-        nonce: '' 
-      }))
-      expect(callbackGotPayload).toBeUndefined()
     })
 
     it("does not forward pongs", () => {

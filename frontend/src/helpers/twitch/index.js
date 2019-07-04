@@ -71,7 +71,8 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
     if(payload.type === 'MESSAGE') {
       const messageData = JSON.parse(payload.data.message)
       onNewSubscriberHandler({
-        displayName: messageData.display_name
+        displayName: messageData.display_name,
+        cumulativeMonths: messageData.cumulative_months
       })
     }
   })

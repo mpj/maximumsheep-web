@@ -148,12 +148,13 @@ describe("helpers/twitch", () => {
             "sub_plan": "Prime", 
             "sub_plan_name": "Channel Subscription (funfunfunction)",
             "months":0, 
-            "cumulative_months":1, 
+            "cumulative_months":617, 
             "context": "sub"
           })
         }
       }))
       expect(callbackGotPayload.displayName).toBe('DoudeMan')
+      expect(callbackGotPayload.cumulativeMonths).toBe(617)
     })
 
     it("does not forward responses", () => {

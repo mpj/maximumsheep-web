@@ -65,9 +65,9 @@ describe("helpers/twitch", () => {
     let subscribeToTwitch
     let sendWasCalledWith
     let webSocketInstance = null
-    
+
     beforeEach(() => {
-      jest.useFakeTimers();
+      jest.useFakeTimers()
       let callbacks = {}
       givenEvent = (topic, data) => callbacks[topic](data)
 
@@ -120,7 +120,7 @@ describe("helpers/twitch", () => {
       )
     })
 
-    describe('handlers', () => {
+    describe("handlers", () => {
       let onNewSubscriberHandlerGotPayload
       let onSubGiftHandlerGotPayload
       let onResubscribeHandlerGotPayload
@@ -133,66 +133,89 @@ describe("helpers/twitch", () => {
         onAnonSubcriptionHandlerGotPayload = null
         onErrorHandlerGotPayload = null
 
-        const { onNewSubscriber, onResubscribe, onSubGift, onAnonSubGift, onError } = subscribeToTwitch()
-        
-        onNewSubscriber(payload => { onNewSubscriberHandlerGotPayload = payload })
-        onSubGift(payload => { onSubGiftHandlerGotPayload = payload })
-        onResubscribe(payload => { onResubscribeHandlerGotPayload = payload })
-        onAnonSubGift(payload => { onAnonSubcriptionHandlerGotPayload = payload })
-        onError(payload => { onErrorHandlerGotPayload = payload })
-        
+        const {
+          onNewSubscriber,
+          onResubscribe,
+          onSubGift,
+          onAnonSubGift,
+          onError
+        } = subscribeToTwitch()
+
+        onNewSubscriber(payload => {
+          onNewSubscriberHandlerGotPayload = payload
+        })
+        onSubGift(payload => {
+          onSubGiftHandlerGotPayload = payload
+        })
+        onResubscribe(payload => {
+          onResubscribeHandlerGotPayload = payload
+        })
+        onAnonSubGift(payload => {
+          onAnonSubcriptionHandlerGotPayload = payload
+        })
+        onError(payload => {
+          onErrorHandlerGotPayload = payload
+        })
+
         onAnonSubcriptionHandlerGotPayload
       })
 
-      describe('given open event', () => {
+      describe("given open event", () => {
         beforeEach(() => {
           givenEvent("open")
         })
 
-        it('does NOT trigger handlers', () => {
+        it("does NOT trigger handlers", () => {
           expect(onNewSubscriberHandlerGotPayload).toBe(null)
           expect(onResubscribeHandlerGotPayload).toBe(null)
           expect(onSubGiftHandlerGotPayload).toBe(null)
         })
 
-        describe('given response event', () => {
+        describe("given response event", () => {
           beforeEach(() => {
-            givenEvent("message", JSON.stringify({ 
-              type: 'RESPONSE', 
-              error: '', 
-              nonce: '' 
-            }))
+            givenEvent(
+              "message",
+              JSON.stringify({
+                type: "RESPONSE",
+                error: "",
+                nonce: ""
+              })
+            )
           })
 
-          it('does NOT trigger handlers', () => {
+          it("does NOT trigger handlers", () => {
             expect(onNewSubscriberHandlerGotPayload).toBe(null)
             expect(onResubscribeHandlerGotPayload).toBe(null)
             expect(onSubGiftHandlerGotPayload).toBe(null)
             expect(onAnonSubcriptionHandlerGotPayload).toBe(null)
           })
-
         })
 
-        describe('given sub event', () => {
+        describe("given sub event", () => {
           beforeEach(() => {
-            givenEvent("message", JSON.stringify({
-              "type": "MESSAGE",
-              "data": {
-                "topic": "channel-subscribe-events-v1.119879569",
-                "message": JSON.stringify({
-                  "display_name": "DoudeMan",
-                  "cumulative_months":1, 
-                  "context": "sub"
-                })
-              }
-            }))
+            givenEvent(
+              "message",
+              JSON.stringify({
+                type: "MESSAGE",
+                data: {
+                  topic: "channel-subscribe-events-v1.119879569",
+                  message: JSON.stringify({
+                    display_name: "DoudeMan",
+                    cumulative_months: 1,
+                    context: "sub"
+                  })
+                }
+              })
+            )
           })
 
-          it('calls onNewSubscriber handler with displayName', () => {
-            expect(onNewSubscriberHandlerGotPayload.displayName).toBe('DoudeMan')
+          it("calls onNewSubscriber handler with displayName", () => {
+            expect(onNewSubscriberHandlerGotPayload.displayName).toBe(
+              "DoudeMan"
+            )
           })
 
-          it('does NOT call onSubGift', () => {
+          it("does NOT call onSubGift", () => {
             expect(onSubGiftHandlerGotPayload).toBe(null)
           })
 
@@ -204,103 +227,115 @@ describe("helpers/twitch", () => {
             expect(onErrorHandlerGotPayload).toBe(null)
             jest.advanceTimersByTime(10000)
             expect(onErrorHandlerGotPayload).toEqual({
-              type: 'NO_PONG'
+              type: "NO_PONG"
             })
           })
 
           it("do NOT error if pong is received after 9999 ms", () => {
             jest.advanceTimersByTime(30000)
             jest.advanceTimersByTime(9999)
-            givenEvent("message", JSON.stringify({
-              "type": "PONG"
-            }))
+            givenEvent(
+              "message",
+              JSON.stringify({
+                type: "PONG"
+              })
+            )
             jest.advanceTimersByTime(1)
             expect(onErrorHandlerGotPayload).toBe(null)
           })
 
           it("after error: no second PING should be sent", () => {
             jest.advanceTimersByTime(60000)
-            // no pong!! 
+            // no pong!!
             expect(webSocketInstance.send.mock.calls.length).toBe(2)
           })
-
         })
 
-        describe('given resub event', () => {
+        describe("given resub event", () => {
           beforeEach(() => {
-            givenEvent("message", JSON.stringify({
-              "type": "MESSAGE",
-              "data": {
-                "topic": "channel-subscribe-events-v1.119879569",
-                "message": JSON.stringify({
-                  "display_name": "SomeGuy",
-                  "cumulative_months":4, 
-                  "context": "resub"
-                })
-              }
-            }))
+            givenEvent(
+              "message",
+              JSON.stringify({
+                type: "MESSAGE",
+                data: {
+                  topic: "channel-subscribe-events-v1.119879569",
+                  message: JSON.stringify({
+                    display_name: "SomeGuy",
+                    cumulative_months: 4,
+                    context: "resub"
+                  })
+                }
+              })
+            )
           })
 
-          it('forwards displayName', () => {
-            expect(onResubscribeHandlerGotPayload.displayName).toBe('SomeGuy')
+          it("forwards displayName", () => {
+            expect(onResubscribeHandlerGotPayload.displayName).toBe("SomeGuy")
           })
 
-          it('forwards cumulativeMonths', () => {
+          it("forwards cumulativeMonths", () => {
             expect(onResubscribeHandlerGotPayload.cumulativeMonths).toBe(4)
           })
         })
-
       })
 
-      describe('given someone gifts a sub to someone else', () => {
+      describe("given someone gifts a sub to someone else", () => {
         beforeEach(() => {
-          givenEvent("message", JSON.stringify({
-            "type": "MESSAGE",
-              "data": {
-                "topic": "channel-subscribe-events-v1.119879569",
-                "message": JSON.stringify({
-                  "display_name": "funfunfunction",
-                  "recipient_display_name": "noopkat",
-                  "context": "subgift"
+          givenEvent(
+            "message",
+            JSON.stringify({
+              type: "MESSAGE",
+              data: {
+                topic: "channel-subscribe-events-v1.119879569",
+                message: JSON.stringify({
+                  display_name: "funfunfunction",
+                  recipient_display_name: "noopkat",
+                  context: "subgift"
                   // Why no months? There is currently no way to gift more
                   // than one month in Twitch UI and I don't see them
                   // adding that - more fun to gift to many instead
                 })
               }
-            }))
-        })
-        
-        it('calls onSubGift handler with displayName', () => {
-          expect(onSubGiftHandlerGotPayload.displayName).toBe('funfunfunction')
+            })
+          )
         })
 
-        it('calls onSubGift handler with recipientDisplayName', () => {
-          expect(onSubGiftHandlerGotPayload.recipientDisplayName).toBe('noopkat')
+        it("calls onSubGift handler with displayName", () => {
+          expect(onSubGiftHandlerGotPayload.displayName).toBe("funfunfunction")
         })
 
-        it('does NOT call onNewSubscriber', () => {
+        it("calls onSubGift handler with recipientDisplayName", () => {
+          expect(onSubGiftHandlerGotPayload.recipientDisplayName).toBe(
+            "noopkat"
+          )
+        })
+
+        it("does NOT call onNewSubscriber", () => {
           expect(onNewSubscriberHandlerGotPayload).toBe(null)
         })
-
-        
       })
 
-      describe('given an anoymous person gifts a sub to someone', () => {
+      describe("given an anoymous person gifts a sub to someone", () => {
         beforeEach(() => {
-            givenEvent("message", JSON.stringify({
-            "type": "MESSAGE",
-            "data": {
-              "topic": "channel-subscribe-events-v1.44322889",
-              "message": JSON.stringify({
-                "context": "anonsubgift",
-                "recipient_display_name": "TWW2",
-              })
-            }
-          }))
+          givenEvent(
+            "message",
+            JSON.stringify({
+              type: "MESSAGE",
+              data: {
+                topic: "channel-subscribe-events-v1.44322889",
+                message: JSON.stringify({
+                  context: "anonsubgift",
+                  recipient_display_name: "TWW2"
+                })
+              }
+            })
+          )
         })
 
-        it('calls onAnonSubGift with recipientDisplayName', () => {
-          expect(onAnonSubcriptionHandlerGotPayload.recipientDisplayName).toBe('TWW2')
+        it("calls onAnonSubGift with recipientDisplayName", () => {
+          expect(onAnonSubcriptionHandlerGotPayload.recipientDisplayName).toBe(
+            "TWW2"
+          )
         })
       })
     })
@@ -312,9 +347,12 @@ describe("helpers/twitch", () => {
         callbackGotPayload = payload
       })
       givenEvent("open")
-      givenEvent("message", JSON.stringify({ 
-        type: 'PONG', 
-      }))
+      givenEvent(
+        "message",
+        JSON.stringify({
+          type: "PONG"
+        })
+      )
       expect(callbackGotPayload).toBeUndefined()
     })
 
@@ -333,21 +371,15 @@ describe("helpers/twitch", () => {
       expect(webSocketInstance.send.mock.calls.length).toBe(1)
       jest.advanceTimersByTime(1)
       expect(webSocketInstance.send.mock.calls.length).toBe(2)
-      expect(JSON.parse(webSocketInstance.send.mock.calls[1]).type)
-        .toBe('PING')
+      expect(JSON.parse(webSocketInstance.send.mock.calls[1]).type).toBe("PING")
     })
 
-    
-
     it.todo("fails if socket never opens")
-    it.todo("refactor to generator")    
+    it.todo("refactor to generator")
   })
 
- 
   it.todo("test request token")
   it.todo("channelid endpoint should use token")
-  
-  
 })
 
 const someOrigin = "https://myapp.com"

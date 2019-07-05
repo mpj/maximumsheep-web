@@ -45,7 +45,6 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
   channelId,
   oAuthAccessToken
 ) {
-
   let onNewSubscriberHandler
   let onSubGiftHandler
   let onResubscribeHandler
@@ -60,51 +59,54 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
       JSON.stringify({
         type: "LISTEN",
         data: {
-          topics: [ topicName + "." + channelId ],
+          topics: [topicName + "." + channelId],
           auth_token: oAuthAccessToken
         }
       })
     )
-    
+
     const intervalHandle = setInterval(() => {
-      socket.send(JSON.stringify({ "type": "PING" }))
+      socket.send(JSON.stringify({ type: "PING" }))
       noPongTimeoutHandle = setTimeout(() => {
         clearInterval(intervalHandle)
         onErrorHandler({
-          type: 'NO_PONG'
+          type: "NO_PONG"
         })
-      }, 10000);
-    }, 30000);
+      }, 10000)
+    }, 30000)
   })
 
   socket.on("message", function(payloadString) {
     const payload = JSON.parse(payloadString)
-    if(payload.type === 'PONG') {
+    if (payload.type === "PONG") {
       clearTimeout(noPongTimeoutHandle)
     }
-    if(payload.type === 'MESSAGE') {
+    if (payload.type === "MESSAGE") {
       const messageData = JSON.parse(payload.data.message)
-      if(messageData.context === 'sub') {
-        if (onNewSubscriberHandler) onNewSubscriberHandler({
-          displayName: messageData.display_name
-        })
+      if (messageData.context === "sub") {
+        if (onNewSubscriberHandler)
+          onNewSubscriberHandler({
+            displayName: messageData.display_name
+          })
       }
 
-      if (messageData.context === 'resub' && onResubscribeHandler) {
+      if (messageData.context === "resub" && onResubscribeHandler) {
         onResubscribeHandler({
           displayName: messageData.display_name,
           cumulativeMonths: messageData.cumulative_months
         })
       }
-        
-      if(messageData.context === 'subgift' && onSubGiftHandler) onSubGiftHandler({
-        displayName: messageData.display_name,
-        recipientDisplayName: messageData.recipient_display_name
-      })
 
-      if (messageData.context === 'anonsubgift' && onAnonSubGiftHandler) onAnonSubGiftHandler({
-        recipientDisplayName: messageData.recipient_display_name
-      })
+      if (messageData.context === "subgift" && onSubGiftHandler)
+        onSubGiftHandler({
+          displayName: messageData.display_name,
+          recipientDisplayName: messageData.recipient_display_name
+        })
+
+      if (messageData.context === "anonsubgift" && onAnonSubGiftHandler)
+        onAnonSubGiftHandler({
+          recipientDisplayName: messageData.recipient_display_name
+        })
     }
   })
 

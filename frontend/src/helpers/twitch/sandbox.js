@@ -24,10 +24,7 @@ const getAccessToken = twitch.getAccessToken.bind(
   process.env.BRIDGE_SECRET_STAGING
 )
 
-const subscribeToTwitch = twitch.subscribeToTwitch.bind(
-  null,
-  WebSocket
-)
+const subscribeToTwitch = twitch.subscribeToTwitch.bind(null, WebSocket)
 
 ;(async function tryChannelId() {
   const channelId = await getChannelId()
@@ -38,17 +35,11 @@ const subscribeToTwitch = twitch.subscribeToTwitch.bind(
   const accessToken = await getAccessToken()
   const channelId = await getChannelId()
   console.log("channelId", channelId)
-  await subscribeToTwitch(
-    topicName,
-    channelId,
-    accessToken,
-    function(message) {
-      console.log(message)
-    }
-  )
+  await subscribeToTwitch(topicName, channelId, accessToken, function(message) {
+    console.log(message)
+  })
   console.log("got channel id", channelId)
 })()
-
 
 /*
 Following is an example of a sub/resub message:

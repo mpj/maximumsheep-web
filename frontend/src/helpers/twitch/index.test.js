@@ -293,13 +293,15 @@ describe("helpers/twitch", () => {
     })
 
     it("pings every 30 seconds", () => {
-      subscribeToTwitch(() => { })
+      subscribeToTwitch()
       givenEvent("open")
       expect(webSocketInstance.send.mock.calls.length).toBe(1)
       jest.advanceTimersByTime(29999)
       expect(webSocketInstance.send.mock.calls.length).toBe(1)
       jest.advanceTimersByTime(1)
       expect(webSocketInstance.send.mock.calls.length).toBe(2)
+      expect(JSON.parse(webSocketInstance.send.mock.calls[1]).type)
+        .toBe('PING')
     })
 
     it.todo("error if no pong witin 10 seconds after ping")

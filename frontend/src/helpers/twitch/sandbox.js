@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 require("dotenv").config({})
 const twitch = require(".")
 const fetch = require("node-fetch")
@@ -30,7 +31,6 @@ const subscribeToTwitch = twitch.subscribeToTwitch.bind(
 
 ;(async function tryChannelId() {
   const channelId = await getChannelId()
-  // eslint-disable-next-line no-console
   console.log("got channel id", channelId)
 })
 ;(async function trySubscribeToTwitch() {
@@ -38,7 +38,7 @@ const subscribeToTwitch = twitch.subscribeToTwitch.bind(
   const accessToken = await getAccessToken()
   const channelId = await getChannelId()
   console.log("channelId", channelId)
-  const cancel = await subscribeToTwitch(
+  await subscribeToTwitch(
     topicName,
     channelId,
     accessToken,
@@ -46,9 +46,9 @@ const subscribeToTwitch = twitch.subscribeToTwitch.bind(
       console.log(message)
     }
   )
-  // eslint-disable-next-line no-console
   console.log("got channel id", channelId)
 })()
+
 
 /*
 Following is an example of a sub/resub message:

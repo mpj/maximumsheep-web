@@ -125,18 +125,21 @@ describe("helpers/twitch", () => {
       let onSubGiftHandlerGotPayload
       let onResubscribeHandlerGotPayload
       let onAnonSubcriptionHandlerGotPayload
+      let onErrorHandlerGotPayload
       beforeEach(() => {
         onNewSubscriberHandlerGotPayload = null
         onSubGiftHandlerGotPayload = null
         onResubscribeHandlerGotPayload = null
         onAnonSubcriptionHandlerGotPayload = null
+        onErrorHandlerGotPayload = null
 
-        const { onNewSubscriber, onResubscribe, onSubGift, onAnonSubGift } = subscribeToTwitch()
+        const { onNewSubscriber, onResubscribe, onSubGift, onAnonSubGift, onError } = subscribeToTwitch()
         
         onNewSubscriber(payload => { onNewSubscriberHandlerGotPayload = payload })
         onSubGift(payload => { onSubGiftHandlerGotPayload = payload })
         onResubscribe(payload => { onResubscribeHandlerGotPayload = payload })
         onAnonSubGift(payload => { onAnonSubcriptionHandlerGotPayload = payload })
+        onError(payload => { onErrorHandlerGotPayload = payload })
         
         onAnonSubcriptionHandlerGotPayload
       })
@@ -192,6 +195,29 @@ describe("helpers/twitch", () => {
           it('does NOT call onSubGift', () => {
             expect(onSubGiftHandlerGotPayload).toBe(null)
           })
+
+          it("error if no pong within 10 seconds after ping", () => {
+            ;(function givenPingHappened() {
+              jest.advanceTimersByTime(30000)
+            })()
+
+            expect(onErrorHandlerGotPayload).toBe(null)
+            jest.advanceTimersByTime(10000)
+            expect(onErrorHandlerGotPayload).toEqual({
+              type: 'NO_PONG'
+            })
+          })
+
+          it("do NOT error if pong is received after 9999 ms", () => {
+            jest.advanceTimersByTime(30000)
+            jest.advanceTimersByTime(9999)
+            givenEvent("message", JSON.stringify({
+              "type": "PONG"
+            }))
+            jest.advanceTimersByTime(1)
+            expect(onErrorHandlerGotPayload).toBe(null)
+          })
+
         })
 
         describe('given resub event', () => {
@@ -250,6 +276,7 @@ describe("helpers/twitch", () => {
           expect(onNewSubscriberHandlerGotPayload).toBe(null)
         })
 
+        
       })
 
       describe('given an anoymous person gifts a sub to someone', () => {
@@ -304,7 +331,8 @@ describe("helpers/twitch", () => {
         .toBe('PING')
     })
 
-    it.todo("error if no pong witin 10 seconds after ping")
+    
+
     it.todo("fails if socket never opens")
     it.todo("refactor to generator")    
   })

@@ -50,8 +50,11 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
   let onSubGiftHandler
   let onResubscribeHandler
   let onAnonSubGiftHandler
+  let onErrorHandler
   const socket = new WebSocket("wss://pubsub-edge.twitch.tv")
 
+  let noPongTimeoutHandle
+  
   socket.on("open", function open() {
     socket.send(
       JSON.stringify({
@@ -62,14 +65,22 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
         }
       })
     )
-
+    
     setInterval(() => {
       socket.send(JSON.stringify({ "type": "PING" }))
+      noPongTimeoutHandle = setTimeout(() => {
+        onErrorHandler({
+          type: 'NO_PONG'
+        })
+      }, 10000);
     }, 30000);
   })
 
   socket.on("message", function(payloadString) {
     const payload = JSON.parse(payloadString)
+    if(payload.type === 'PONG') {
+      clearTimeout(noPongTimeoutHandle)
+    }
     if(payload.type === 'MESSAGE') {
       const messageData = JSON.parse(payload.data.message)
       if(messageData.context === 'sub') {
@@ -111,6 +122,9 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
     },
     onAnonSubGift(handler) {
       onAnonSubGiftHandler = handler
+    },
+    onError(handler) {
+      onErrorHandler = handler
     }
   }
 }

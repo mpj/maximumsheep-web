@@ -218,6 +218,12 @@ describe("helpers/twitch", () => {
             expect(onErrorHandlerGotPayload).toBe(null)
           })
 
+          it("after error: no second PING should be sent", () => {
+            jest.advanceTimersByTime(60000)
+            // no pong!! 
+            expect(webSocketInstance.send.mock.calls.length).toBe(2)
+          })
+
         })
 
         describe('given resub event', () => {

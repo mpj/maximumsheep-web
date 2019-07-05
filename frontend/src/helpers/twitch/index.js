@@ -54,7 +54,7 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
   const socket = new WebSocket("wss://pubsub-edge.twitch.tv")
 
   let noPongTimeoutHandle
-  
+
   socket.on("open", function open() {
     socket.send(
       JSON.stringify({
@@ -66,9 +66,10 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
       })
     )
     
-    setInterval(() => {
+    const intervalHandle = setInterval(() => {
       socket.send(JSON.stringify({ "type": "PING" }))
       noPongTimeoutHandle = setTimeout(() => {
+        clearInterval(intervalHandle)
         onErrorHandler({
           type: 'NO_PONG'
         })

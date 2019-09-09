@@ -288,13 +288,11 @@ describe("helpers/twitch", () => {
             )
           })
 
-          it("calls error handler with correct error type", () => 
+          it("calls error handler with correct error type", () =>
             expect(onErrorHandlerGotPayload).toEqual({
               type: "DISCONNECTED"
             }))
-
         })
-
       })
 
       describe("given someone gifts a sub to someone else", () => {

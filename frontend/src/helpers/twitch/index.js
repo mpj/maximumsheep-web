@@ -78,6 +78,11 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
 
   socket.on("message", function(payloadString) {
     const payload = JSON.parse(payloadString)
+    if (payload.type === "RECONNECT") {
+      onErrorHandler({
+        type: "DISCONNECTED"
+      })
+    }
     if (payload.type === "PONG") {
       clearTimeout(noPongTimeoutHandle)
     }

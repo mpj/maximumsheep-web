@@ -277,6 +277,24 @@ describe("helpers/twitch", () => {
             expect(onResubscribeHandlerGotPayload.cumulativeMonths).toBe(4)
           })
         })
+
+        describe("given reconnect event", () => {
+          beforeEach(() => {
+            givenEvent(
+              "message",
+              JSON.stringify({
+                type: "RECONNECT"
+              })
+            )
+          })
+
+          it("calls error handler with correct error type", () => 
+            expect(onErrorHandlerGotPayload).toEqual({
+              type: "DISCONNECTED"
+            }))
+
+        })
+
       })
 
       describe("given someone gifts a sub to someone else", () => {

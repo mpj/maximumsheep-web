@@ -90,15 +90,15 @@ describe("token-store-mongo", () => {
   })
 
   describe("loadRefreshToken", () => {
-
-    describe("given happy path", () =>{ 
+    describe("given happy path", () => {
       let result
       beforeEach(async () => {
         findOneWillReturnDocument = { value: someToken }
         result = await loadRefreshToken(someUri, someDbName)
       })
 
-      it("passes url to client", () => expect(clientCreatedWithUri).toBe(someUri))
+      it("passes url to client", () =>
+        expect(clientCreatedWithUri).toBe(someUri))
 
       it("uses new url parser on client", () =>
         expect(clientCreatedWithOpts.useNewUrlParser).toBe(true))
@@ -118,19 +118,15 @@ describe("token-store-mongo", () => {
       it("closes the connection", () => expect(closeWasCalled).toBe(true))
     })
 
-    describe("given that state doc does not exist yet", () => { 
-      
+    describe("given that state doc does not exist yet", () => {
       let result
       beforeEach(async () => {
         findOneWillReturnDocument = null
         result = await loadRefreshToken(someUri, someDbName)
       })
 
-      it('will return null', () => 
-        expect(result).toBe(null))    
-
+      it("will return null", () => expect(result).toBe(null))
     })
-    
   })
 })
 

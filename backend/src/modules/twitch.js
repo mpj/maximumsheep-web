@@ -78,6 +78,7 @@ exports.getChannelId = function getChannelId(
   return fetch("https://api.twitch.tv/kraken/channel", {
     credentials: "include",
     headers: {
+      "Accept": "application/vnd.twitchtv.v5+json",
       "Client-ID": clientId,
       Authorization: "OAuth " + oAuthAccessToken
     }

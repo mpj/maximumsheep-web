@@ -17,7 +17,7 @@ exports.loadRefreshToken = async (MongoClient, uri, dbName) => {
       .collection(COLLECTION_NAME)
       .findOne({ label: LABEL_NAME })
   )
-  return doc.value
+  return doc && doc.value
 }
 
 const COLLECTION_NAME = "state"

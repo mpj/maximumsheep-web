@@ -90,30 +90,47 @@ describe("token-store-mongo", () => {
   })
 
   describe("loadRefreshToken", () => {
-    let result
-    beforeEach(async () => {
-      findOneWillReturnDocument = { value: someToken }
-      result = await loadRefreshToken(someUri, someDbName)
+
+    describe("given happy path", () =>{ 
+      let result
+      beforeEach(async () => {
+        findOneWillReturnDocument = { value: someToken }
+        result = await loadRefreshToken(someUri, someDbName)
+      })
+
+      it("passes url to client", () => expect(clientCreatedWithUri).toBe(someUri))
+
+      it("uses new url parser on client", () =>
+        expect(clientCreatedWithOpts.useNewUrlParser).toBe(true))
+
+      it("passes database name to client", () =>
+        expect(dbCalledWithName).toBe(someDbName))
+
+      it("uses collect collection name", () =>
+        expect(collectionCalledWithName).toBe("state"))
+
+      it("asks for the correct document", () =>
+        expect(findOneCalledWithFilter.label).toBe("refreshToken"))
+
+      it("returns the value of the document", () =>
+        expect(result).toBe(someToken))
+
+      it("closes the connection", () => expect(closeWasCalled).toBe(true))
     })
 
-    it("passes url to client", () => expect(clientCreatedWithUri).toBe(someUri))
+    describe("given that state doc does not exist yet", () => { 
+      
+      let result
+      beforeEach(async () => {
+        findOneWillReturnDocument = null
+        result = await loadRefreshToken(someUri, someDbName)
+      })
 
-    it("uses new url parser on client", () =>
-      expect(clientCreatedWithOpts.useNewUrlParser).toBe(true))
+      it('will return null', () => 
+        expect(result).toBe(null))    
 
-    it("passes database name to client", () =>
-      expect(dbCalledWithName).toBe(someDbName))
-
-    it("uses collect collection name", () =>
-      expect(collectionCalledWithName).toBe("state"))
-
-    it("asks for the correct document", () =>
-      expect(findOneCalledWithFilter.label).toBe("refreshToken"))
-
-    it("returns the value of the document", () =>
-      expect(result).toBe(someToken))
-
-    it("closes the connection", () => expect(closeWasCalled).toBe(true))
+    })
+    
   })
 })
 

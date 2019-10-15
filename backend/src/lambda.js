@@ -49,7 +49,7 @@ async function requestToken(req, res) {
 
   const refreshToken = await loadRefreshToken()
   if (!refreshToken) {
-    res.writeHead(401)
+    res.writeHead(423)
     res.end("No refresh token stored. Go to /login")
     return
   }
@@ -104,6 +104,7 @@ async function ensureCorrectSecret(req, res) {
   }
   if (!body || body.secret !== process.env.MAIN_CLIENT_SECRET) {
     res.writeHead(401)
+    console.log(process.env.MAIN_CLIENT_SECRET, body.secret)
     res.end(
       'This endpoint requires a JSON object with a correct "secret" property'
     )

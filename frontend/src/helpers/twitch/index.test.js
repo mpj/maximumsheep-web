@@ -162,16 +162,13 @@ describe("helpers/twitch", () => {
 
       describe("given ENOTFOUND event", () => {
         beforeEach(() => {
-          givenEvent(
-            "error",
-            { code: 'WHATISTHIS' }
-          )
+          givenEvent("error", { code: "WHATISTHIS" })
         })
 
         it("calls error handler with correct error type", () =>
           expect(onErrorHandlerGotPayload).toEqual({
             type: "UNKNOWN_ERROR",
-            code: 'WHATISTHIS'
+            code: "WHATISTHIS"
           }))
       })
 
@@ -404,7 +401,6 @@ describe("helpers/twitch", () => {
       expect(webSocketInstance.send.mock.calls.length).toBe(2)
       expect(JSON.parse(webSocketInstance.send.mock.calls[1]).type).toBe("PING")
     })
-
   })
 
   it.todo("test request token")

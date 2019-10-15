@@ -115,6 +115,13 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
     }
   })
 
+  socket.on("error", (err) => {
+    onErrorHandler({
+      type: "UNKNOWN_ERROR",
+      code: err.code
+    })
+  })
+
   return {
     cancel() {
       socket.terminate()

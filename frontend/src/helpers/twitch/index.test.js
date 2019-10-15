@@ -160,6 +160,21 @@ describe("helpers/twitch", () => {
         onAnonSubcriptionHandlerGotPayload
       })
 
+      describe("given ENOTFOUND event", () => {
+        beforeEach(() => {
+          givenEvent(
+            "error",
+            { code: 'WHATISTHIS' }
+          )
+        })
+
+        it("calls error handler with correct error type", () =>
+          expect(onErrorHandlerGotPayload).toEqual({
+            type: "UNKNOWN_ERROR",
+            code: 'WHATISTHIS'
+          }))
+      })
+
       describe("given open event", () => {
         beforeEach(() => {
           givenEvent("open")
@@ -390,8 +405,6 @@ describe("helpers/twitch", () => {
       expect(JSON.parse(webSocketInstance.send.mock.calls[1]).type).toBe("PING")
     })
 
-    it.todo("fails if socket never opens")
-    it.todo("refactor to generator")
   })
 
   it.todo("test request token")

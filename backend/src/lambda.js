@@ -104,7 +104,6 @@ async function ensureCorrectSecret(req, res) {
   }
   if (!body || body.secret !== process.env.MAIN_CLIENT_SECRET) {
     res.writeHead(401)
-    console.log(process.env.MAIN_CLIENT_SECRET, body.secret)
     res.end(
       'This endpoint requires a JSON object with a correct "secret" property'
     )

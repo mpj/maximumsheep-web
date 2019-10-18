@@ -13,15 +13,15 @@ const origins = {
 const getChannelId = twitch.getChannelId.bind(
   null,
   fetch,
-  origins.dev,
-  process.env.BRIDGE_SECRET_DEV
+  origins.staging,
+  process.env.BRIDGE_SECRET_STAGING
 )
 
 const getAccessToken = twitch.getAccessToken.bind(
   null,
   fetch,
-  origins.dev,
-  process.env.BRIDGE_SECRET_DEV
+  origins.staging,
+  process.env.BRIDGE_SECRET_STAGING
 )
 
 const subscribeToTwitch = twitch.subscribeToTwitch.bind(null, WebSocket)
@@ -35,10 +35,10 @@ const subscribeToTwitch = twitch.subscribeToTwitch.bind(null, WebSocket)
   const accessToken = await getAccessToken()
   const channelId = await getChannelId()
   console.log("channelId", channelId)
-  subscribeToTwitch(topicName, channelId, accessToken, function(message) {
-    console.log(message)
+  const { onSubGift } = subscribeToTwitch(topicName, channelId, accessToken)
+  onSubGift(gift => {
+     console.log('gift', gift)
   })
-  console.log("got channel id", channelId)
 })()
 
 /*

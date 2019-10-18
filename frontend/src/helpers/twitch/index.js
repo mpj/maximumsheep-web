@@ -54,7 +54,7 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
 
   let noPongTimeoutHandle
 
-  socket.on("open", function open() {
+  socket.onopen = function open() {
     socket.send(
       JSON.stringify({
         type: "LISTEN",
@@ -74,10 +74,12 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
         })
       }, 10000)
     }, 30000)
-  })
+  }
 
-  socket.on("message", function(payloadString) {
+  socket.onmessage = function(event) {
+    const payloadString = event.data
     const payload = JSON.parse(payloadString)
+    console.log('payload', payload)
     if (payload.type === "RECONNECT") {
       onErrorHandler({
         type: "DISCONNECTED"
@@ -113,18 +115,18 @@ module.exports.subscribeToTwitch = function subscribeToTwitch(
           recipientDisplayName: messageData.recipient_display_name
         })
     }
-  })
+  }
 
-  socket.on("error", err => {
+  socket.onerror = err => {
     onErrorHandler({
       type: "UNKNOWN_ERROR",
       code: err.code
     })
-  })
+  }
 
   return {
     cancel() {
-      socket.terminate()
+      socket.close()
     },
     onNewSubscriber(handler) {
       onNewSubscriberHandler = handler

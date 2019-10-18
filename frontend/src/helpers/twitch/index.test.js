@@ -60,28 +60,21 @@ describe("helpers/twitch", () => {
   describe("subscribeToTwitch", () => {
     let WebSocket
     let socketConstructedWithUrl
-    let givenEvent
-    let terminateWasCalled
+    let closeWasCalled
     let subscribeToTwitch
     let sendWasCalledWith
     let webSocketInstance = null
 
     beforeEach(() => {
       jest.useFakeTimers()
-      let callbacks = {}
-      givenEvent = (topic, data) => callbacks[topic](data)
-
       WebSocket = function(url) {
         expect(webSocketInstance).toBe(null)
         socketConstructedWithUrl = url
-        this.on = function(topic, callback) {
-          callbacks[topic] = callback
-        }
         this.send = jest.fn(data => {
           sendWasCalledWith = data
         })
-        this.terminate = () => {
-          terminateWasCalled = true
+        this.close = () => {
+          closeWasCalled = true
         }
         webSocketInstance = this
       }
@@ -108,7 +101,7 @@ describe("helpers/twitch", () => {
     it("sends listenting message after it sees socket is open", () => {
       subscribeToTwitch()
       expect(sendWasCalledWith).toBeUndefined()
-      givenEvent("open")
+      webSocketInstance.onopen()
       expect(sendWasCalledWith).toBe(
         JSON.stringify({
           type: "LISTEN",
@@ -162,7 +155,7 @@ describe("helpers/twitch", () => {
 
       describe("given ENOTFOUND event", () => {
         beforeEach(() => {
-          givenEvent("error", { code: "WHATISTHIS" })
+          webSocketInstance.onerror({ code: "WHATISTHIS" })
         })
 
         it("calls error handler with correct error type", () =>
@@ -174,7 +167,7 @@ describe("helpers/twitch", () => {
 
       describe("given open event", () => {
         beforeEach(() => {
-          givenEvent("open")
+          webSocketInstance.onopen()
         })
 
         it("does NOT trigger handlers", () => {
@@ -185,14 +178,13 @@ describe("helpers/twitch", () => {
 
         describe("given response event", () => {
           beforeEach(() => {
-            givenEvent(
-              "message",
-              JSON.stringify({
+            webSocketInstance.onmessage({
+              data: JSON.stringify({
                 type: "RESPONSE",
                 error: "",
                 nonce: ""
               })
-            )
+            })
           })
 
           it("does NOT trigger handlers", () => {
@@ -205,9 +197,8 @@ describe("helpers/twitch", () => {
 
         describe("given sub event", () => {
           beforeEach(() => {
-            givenEvent(
-              "message",
-              JSON.stringify({
+            webSocketInstance.onmessage({
+              data: JSON.stringify({
                 type: "MESSAGE",
                 data: {
                   topic: "channel-subscribe-events-v1.119879569",
@@ -218,7 +209,7 @@ describe("helpers/twitch", () => {
                   })
                 }
               })
-            )
+            })
           })
 
           it("calls onNewSubscriber handler with displayName", () => {
@@ -246,12 +237,11 @@ describe("helpers/twitch", () => {
           it("do NOT error if pong is received after 9999 ms", () => {
             jest.advanceTimersByTime(30000)
             jest.advanceTimersByTime(9999)
-            givenEvent(
-              "message",
-              JSON.stringify({
+            webSocketInstance.onmessage({
+              data: JSON.stringify({
                 type: "PONG"
               })
-            )
+            })
             jest.advanceTimersByTime(1)
             expect(onErrorHandlerGotPayload).toBe(null)
           })
@@ -265,9 +255,8 @@ describe("helpers/twitch", () => {
 
         describe("given resub event", () => {
           beforeEach(() => {
-            givenEvent(
-              "message",
-              JSON.stringify({
+            webSocketInstance.onmessage({
+              data: JSON.stringify({
                 type: "MESSAGE",
                 data: {
                   topic: "channel-subscribe-events-v1.119879569",
@@ -278,7 +267,7 @@ describe("helpers/twitch", () => {
                   })
                 }
               })
-            )
+            })
           })
 
           it("forwards displayName", () => {
@@ -292,12 +281,11 @@ describe("helpers/twitch", () => {
 
         describe("given reconnect event", () => {
           beforeEach(() => {
-            givenEvent(
-              "message",
-              JSON.stringify({
+            webSocketInstance.onmessage({
+              data: JSON.stringify({
                 type: "RECONNECT"
               })
-            )
+            })
           })
 
           it("calls error handler with correct error type", () =>
@@ -309,9 +297,8 @@ describe("helpers/twitch", () => {
 
       describe("given someone gifts a sub to someone else", () => {
         beforeEach(() => {
-          givenEvent(
-            "message",
-            JSON.stringify({
+          webSocketInstance.onmessage({
+            data: JSON.stringify({
               type: "MESSAGE",
               data: {
                 topic: "channel-subscribe-events-v1.119879569",
@@ -325,7 +312,7 @@ describe("helpers/twitch", () => {
                 })
               }
             })
-          )
+          })
         })
 
         it("calls onSubGift handler with displayName", () => {
@@ -345,9 +332,8 @@ describe("helpers/twitch", () => {
 
       describe("given an anoymous person gifts a sub to someone", () => {
         beforeEach(() => {
-          givenEvent(
-            "message",
-            JSON.stringify({
+          webSocketInstance.onmessage({
+            data: JSON.stringify({
               type: "MESSAGE",
               data: {
                 topic: "channel-subscribe-events-v1.44322889",
@@ -357,7 +343,7 @@ describe("helpers/twitch", () => {
                 })
               }
             })
-          )
+          })
         })
 
         it("calls onAnonSubGift with recipientDisplayName", () => {
@@ -374,26 +360,25 @@ describe("helpers/twitch", () => {
       onNewSubscriber(payload => {
         callbackGotPayload = payload
       })
-      givenEvent("open")
-      givenEvent(
-        "message",
-        JSON.stringify({
+      webSocketInstance.onopen()
+      webSocketInstance.onmessage({
+        data: JSON.stringify({
           type: "PONG"
         })
-      )
+      })
       expect(callbackGotPayload).toBeUndefined()
     })
 
     it("terminates the connection when calling cancel", () => {
       const { cancel } = subscribeToTwitch(() => {})
-      expect(terminateWasCalled).toBeUndefined()
+      expect(closeWasCalled).toBeUndefined()
       cancel()
-      expect(terminateWasCalled).toBe(true)
+      expect(closeWasCalled).toBe(true)
     })
 
     it("pings every 30 seconds", () => {
       subscribeToTwitch()
-      givenEvent("open")
+      webSocketInstance.onopen()
       expect(webSocketInstance.send.mock.calls.length).toBe(1)
       jest.advanceTimersByTime(29999)
       expect(webSocketInstance.send.mock.calls.length).toBe(1)

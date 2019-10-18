@@ -5,7 +5,7 @@ const fetch = require("node-fetch")
 const WebSocket = require("isomorphic-ws")
 
 const origins = {
-  dev: "http://localhost:3001",
+  dev: "http://localhost:3000",
   staging: "https://maximumsheep-web-backend-staging.now.sh",
   production: "https://maximumsheep-web-backend-production.now.sh"
 }
@@ -13,15 +13,15 @@ const origins = {
 const getChannelId = twitch.getChannelId.bind(
   null,
   fetch,
-  origins.staging,
-  process.env.BRIDGE_SECRET_STAGING
+  origins.dev,
+  process.env.BRIDGE_SECRET_DEV
 )
 
 const getAccessToken = twitch.getAccessToken.bind(
   null,
   fetch,
-  origins.staging,
-  process.env.BRIDGE_SECRET_STAGING
+  origins.dev,
+  process.env.BRIDGE_SECRET_DEV
 )
 
 const subscribeToTwitch = twitch.subscribeToTwitch.bind(null, WebSocket)
@@ -35,7 +35,7 @@ const subscribeToTwitch = twitch.subscribeToTwitch.bind(null, WebSocket)
   const accessToken = await getAccessToken()
   const channelId = await getChannelId()
   console.log("channelId", channelId)
-  await subscribeToTwitch(topicName, channelId, accessToken, function(message) {
+  subscribeToTwitch(topicName, channelId, accessToken, function(message) {
     console.log(message)
   })
   console.log("got channel id", channelId)

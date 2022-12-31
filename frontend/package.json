@@ -15,12 +15,12 @@
     "semi": false
   },
   "dependencies": {
-    "next": "^8.1.0",
+    "next": "^13.1.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.20.7",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
